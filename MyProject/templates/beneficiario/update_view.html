@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<br>
+<br>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="alert alert-success">
+            <h2 style="text-align:center;">
+                <b>
+                <div style="font-variant: small-caps;">AGGIORNA BENEFICIARIO
+                </b>
+                </div> 
+          </h2>
+        </div>
+      </div>
+    </div>
+  </div>  
+<br>
+<section>
+    <form method="post" action="{% url 'aggiorna' pk=id %}">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                  {% csrf_token %}
+                  {{ error }}
+                  {{ form|crispy }}
+                </div>
+              </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block btn-space">Salva</button>
+                    <button class="btn btn-danger btn-lg ml-3" type="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <form method="post" action="{% url 'delete_view' pk=id %}">
+    {% csrf_token %}
+    {{ error }}
+        <!-- The Modal -->
+    <div class="modal" id="myModal">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+            <h4 class="modal-title">Conferma Eliminazione</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <p>Stai per eliminare il beneficiario, tutte le scadenze associate e le relative ricevute. 
+                  Non potrai recuperare i dati. Confermi l'eliminazione?</p>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-danger">Conferma</button>
+            </div>
+        </div>
+      </div>
+    </div>
+</form>
+{% endblock content %}
+</section>
+   
+    
