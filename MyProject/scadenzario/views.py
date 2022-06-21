@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 import base64
 from encodings import utf_8
 from http.client import HTTPResponse
@@ -29,9 +30,11 @@ import mimetypes
 import os
 # Import HttpResponse module
 from django.http.response import HttpResponse
+from django.db import connection, connections
 
 # Create your views here.
 
+#HOME PAGE
 @login_required(login_url='/accounts/login/')
 def homepage(request):
     return render(request,'scadenzario/home.html')
@@ -42,12 +45,15 @@ def registrazione(request):
     if request.method == "POST":
         form = FormRegistrazioneUser(request.POST)
         if form.is_valid():
-            username = form.cleaned_data["username"]
-            email = form.cleaned_data["email"]
-            password = form.cleaned_data["password"]
-            User.objects.create_user(username=username, password=password, email=email)
-            user = authenticate(username=username, password=password)
-            login(request, user)
+            try:
+                username = form.cleaned_data["username"]
+                email = form.cleaned_data["email"]
+                password = form.cleaned_data["password"]
+                User.objects.create_user(username=username, password=password, email=email)
+                user = authenticate(username=username, password=password)
+                login(request, user)
+            except:
+                print("Errore in fase di registrazione")
             return HttpResponseRedirect("/")
     else:
         form = FormRegistrazioneUser()
@@ -57,36 +63,44 @@ def registrazione(request):
 
 @login_required(login_url='/accounts/login/')
 def creaBeneficiarioView(request):
-    if request.method == 'POST':
-        form = BeneficiarioModelForm(request.POST)
-        if form.is_valid():
-            form.iduser = request.POST.get('iduser')
-            form.save()
-            return HttpResponseRedirect('/')
-    else:
-        form = BeneficiarioModelForm()
+    try:
+        if request.method == 'POST':
+            form = BeneficiarioModelForm(request.POST)
+            if form.is_valid():
+                form.iduser = request.POST.get('iduser')
+                form.save()
+                return HttpResponseRedirect('/')
+        else:
+            form = BeneficiarioModelForm()
+    except:
+        print('Errore in fase di inserimento del beneficiario')
     context = {'form':form}
     return render(request,'beneficiario/create_beneficiario.html',context)
 
 
 @login_required(login_url='/accounts/login/')
 def creaScadenzaView(request):
-    if request.method == 'POST':
-        form = ScadenzeModelForm(request.POST)
-        if form.is_valid():
-            form.iduser = request.POST.get('iduser')
-            #CALCOLO I GIORNI RITARDO
-            if form.cleaned_data['datapagamento'] != '':
-                form.giorniritardo=calcolo_giorni_ritardo(form.cleaned_data['datascadenza'],form.cleaned_data['datapagamento'])
-            else:
-                form.giorniritardo=calcolo_giorni_ritardo(form.cleaned_data['datascadenza'] , date.today())
-            query = my_custom_sql(form.cleaned_data['beneficiario'])
-            my_insert_sql(form,query[0])
-            return HttpResponseRedirect('/')
-    else:
+    try:
+        if request.method == 'POST':
+            form = ScadenzeModelForm(request.POST)
+            if form.is_valid():
+                form.iduser = request.POST.get('iduser')
+                #CALCOLO I GIORNI RITARDO
+                if form.cleaned_data['datapagamento'] != '':
+                    form.giorniritardo=calcolo_giorni_ritardo(form.cleaned_data['datascadenza'],form.cleaned_data['datapagamento'])
+                else:
+                    form.giorniritardo=calcolo_giorni_ritardo(form.cleaned_data['datascadenza'] , date.today())
+                query = my_custom_sql(form.cleaned_data['beneficiario'])
+                my_insert_sql(form,query[0])
+                return HttpResponseRedirect('/')
+        else:
+            form = ScadenzeModelForm(initial={'giorniritardo': 0})
+    except:
+        print('Errore in fase di inserimento della scadenza')
+    finally:
         form = ScadenzeModelForm(initial={'giorniritardo': 0})
-    form.fields['beneficiario'].queryset = ModelBeneficiario.objects.filter(iduser=request.user.pk)
-    context = {'form':form}
+        form.fields['beneficiario'].queryset = ModelBeneficiario.objects.filter(iduser=request.user.pk)
+        context = {'form':form}
     return render(request,'scadenze/create_scadenza.html',context)
 
 #LISTA BENEFICIARI CON PAGINAZIONE
@@ -167,11 +181,11 @@ def get_queryset_scadenze(request):
 #DETTAGLIO BENEFICIARIO
 @login_required(login_url='/accounts/login/')
 def detail_view(request,pk):
-    # dictionary for initial data with
-    # field names as keys
     context ={}
-    data = ModelBeneficiario.objects.get(id = pk)
-    # add the dictionary during initialization
+    try:
+        data = ModelBeneficiario.objects.get(id = pk)
+    except:
+        print('Errore in detail_view in fase di creazione del modello.')
     context = {'data':data, 'pk':pk}
     return render(request, "beneficiario/detail_view.html", context)
 
@@ -179,34 +193,28 @@ def detail_view(request,pk):
 #DETTAGLIO SCADENZA
 @login_required(login_url='/accounts/login/')
 def detail_view_scadenza(request,pk):
-    # dictionary for initial data with
-    # field names as keys
     context ={}
-    data = my_select_dettaglio_scadenza_sql(pk)
-    form = ScadenzeModelForm()
-    initialize_form_for_update(form,pk)
-    # add the dictionary during initialization
+    try:
+        data = my_select_dettaglio_scadenza_sql(pk)
+        form = ScadenzeModelForm()
+        initialize_form_for_update(form,pk)
+    except:
+        print('errore in creazione del Model Form in detail_view_scadenza')
     context = {'data':data, "form":form ,'pk':pk}
     return render(request, "scadenze/detail_view_scadenze.html", context)
 
-
 #UPDATE BENEFICIARIO
-# update view for details
 @login_required(login_url='/accounts/login/')
 def update_view(request, pk):
-    # dictionary for initial data with
-    # field names as keys
-    context ={}
-    # fetch the object related to passed id
-    obj = get_object_or_404(ModelBeneficiario, id = pk)
-    # pass the object as instance in form
-    form = BeneficiarioModelForm(request.POST or None, instance = obj)
-    # save the data from the form and
-    # redirect to detail_view
-    if form.is_valid():
-        form.save()
-        return HttpResponseRedirect("/")
-    # add form dictionary to context
+    try:
+        context ={}
+        obj = get_object_or_404(ModelBeneficiario, id = pk)
+        form = BeneficiarioModelForm(request.POST or None, instance = obj)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect("/")
+    except:
+        print('errore in update_view chiave passata: ',pk)
     context = {'form':form,'id':pk}
     return render(request, "update_view.html", context)
 
@@ -217,89 +225,103 @@ def update_view_scadenza(request, pk):
     context ={}
     form = {}
     giorni=0
-    if request.method == 'GET':
-        form = ScadenzeModelForm()
-        giorni=initialize_form_for_update(form,pk)
-    data = my_select_ricevute_sql(pk)
-    count = my_select_count_sql(pk)
+    count = 0
+    try:
+        if request.method == 'GET':
+            form = ScadenzeModelForm()
+            giorni=initialize_form_for_update(form,pk)
+        data = my_select_ricevute_sql(pk)
+        count = my_select_count_sql(pk)
+    except:
+        print('Errore in update_view_scadenza chiave passata: ',pk)
     context = {'form':form,'pk':pk,"data":data,"count":count,"giorni":giorni}
     return render(request, "update_view_scadenza.html", context)
 
-
-
 #INIZIALIZZO IL FORM PER L'UPDATE
 def initialize_form_for_update(form,pk):
-    data = my_select_dettaglio_scadenza_sql(pk)
-    form.fields['beneficiario'].initial=data[8]
-    form.fields['datascadenza'].initial = data[2]
-    form.fields['id'].initial=data[0]
-    form.fields['importo'].initial=data[3]
-    form.fields['sollecito'].initial=data[4]
-    form.fields['giorniritardo'].initial=data[5]
-    form.fields['datapagamento'].initial=data[6]
-    form.fields['iduser'].initial=data[7]
-    form.fields['idbeneficiario_id'].initial=data[8]
-    giorni = data[5]
+    try:
+        data = my_select_dettaglio_scadenza_sql(pk)
+        form.fields['beneficiario'].initial=data[8]
+        form.fields['datascadenza'].initial = data[2]
+        form.fields['id'].initial=data[0]
+        form.fields['importo'].initial=data[3]
+        form.fields['sollecito'].initial=data[4]
+        form.fields['giorniritardo'].initial=data[5]
+        form.fields['datapagamento'].initial=data[6]
+        form.fields['iduser'].initial=data[7]
+        form.fields['idbeneficiario_id'].initial=data[8]
+        giorni = data[5]
+    except:
+        print('Errore in initialize_form_for_update, chiave passata: ',pk)
+        return 0
     return giorni
-    
-    
-    
     
 #AGGIORNA LA SCADENZA CON UN CURSORE
 def update_view_sql(request,pk):
     response=''
     giorni = 0
-    if request.method == "GET":
-        print('DENTRO GET')
-        form = ScadenzeModelForm()
-        giorni= initialize_form_for_update(form,pk)
-        form.fields['beneficiario'].queryset = ModelBeneficiario.objects.filter(iduser=request.user.pk)
-        data = my_select_ricevute_sql(pk)
-        count = my_select_count_sql(pk)
-        context = {'form':form,'pk':pk,"data":data,"count":count,"giorni":giorni}
-        return render(request, "update_view_scadenza.html", context)
-    if request.method == "POST": 
-        form = ScadenzeModelForm(request.POST or None)
-        files = request.FILES.getlist('files',None)
-        if form.is_valid():
-            print('FORM VALIDO')
-            count = len(request.FILES.getlist('files'))
-            print('COUNT:',count)
-            beneficiario=form.cleaned_data['beneficiario']
-            if count > 0:
-                response = "FILE SUCCESSFULLY UPLOADED"
-                for f in files:
-                        handle_uploaded_file(f)
-                        binary_file = open("templates/upload/"+ f.name, "rb").read()
-                        #INSERISCO LE RICEVUTE
-                        my_insert_sql_ricevuta(f.name,pathlib.Path("templates/upload/"+ f.name).suffix,binary_file, beneficiario,"templates/upload/"+ f.name,pk)
-                        #CANCELLO IL FILE INSERITO
-                        os.remove("templates/upload/"+ f.name)
-                        response = "RICEVUTA/E INSERITE CON SUCCESSO"
-                        data = my_select_ricevute_sql(pk)
-                        count = my_select_count_sql(pk)
-                        context = {'form':form,'pk':pk,"data":data,"count":count,"response":response,"giorni":giorni}
-                return render(request, "update_view_scadenza.html", context)  
-            else:
-                context ={}
-                if form.cleaned_data['datapagamento'] != '':
-                    form.giorniritardo=calcolo_giorni_ritardo(form.cleaned_data['datascadenza'],form.cleaned_data['datapagamento'])
+    try:
+        if request.method == "GET":
+            print('DENTRO GET')
+            form = ScadenzeModelForm()
+            giorni= initialize_form_for_update(form,pk)
+            form.fields['beneficiario'].queryset = ModelBeneficiario.objects.filter(iduser=request.user.pk)
+            data = my_select_ricevute_sql(pk)
+            count = my_select_count_sql(pk)
+            context = {'form':form,'pk':pk,"data":data,"count":count,"giorni":giorni}
+            return render(request, "update_view_scadenza.html", context)
+    except:
+        print('Errore metodo GET in update_view_sql')
+    try:
+        if request.method == "POST": 
+            form = ScadenzeModelForm(request.POST or None)
+            files = request.FILES.getlist('files',None)
+            if form.is_valid():
+                print('FORM VALIDO')
+                count = len(request.FILES.getlist('files'))
+                print('COUNT:',count)
+                beneficiario=form.cleaned_data['beneficiario']
+                if count > 0:
+                    response = "FILE SUCCESSFULLY UPLOADED"
+                    for f in files:
+                            handle_uploaded_file(f)
+                            binary_file = open("templates/upload/"+ f.name, "rb").read()
+                            #INSERISCO LE RICEVUTE
+                            BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                            filepath = BASE_DIR + '/templates/upload/' + f.name
+                            my_insert_sql_ricevuta(f.name,pathlib.Path("templates/upload/"+ f.name).suffix,binary_file, beneficiario,filepath,pk)
+                            #CANCELLO IL FILE INSERITO
+                            os.remove("templates/upload/"+ f.name)
+                            response = "RICEVUTA/E INSERITE CON SUCCESSO"
+                            data = my_select_ricevute_sql(pk)
+                            count = my_select_count_sql(pk)
+                            context = {'form':form,'pk':pk,"data":data,"count":count,"response":response,"giorni":giorni}
+                    return render(request, "update_view_scadenza.html", context)  
                 else:
-                    form.giorniritardo=calcolo_giorni_ritardo(form.cleaned_data['datascadenza'] , date.today())
-                query = my_custom_sql(form.cleaned_data['beneficiario'])
-                print('IDBENEFICIARIO',query[0])
-                my_update_scadenza_sql(form,pk,query[0])
-                return HttpResponseRedirect('/')  
-        return HttpResponseRedirect('/')             
+                    context ={}
+                    if form.cleaned_data['datapagamento'] != '':
+                        form.giorniritardo=calcolo_giorni_ritardo(form.cleaned_data['datascadenza'],form.cleaned_data['datapagamento'])
+                    else:
+                        form.giorniritardo=calcolo_giorni_ritardo(form.cleaned_data['datascadenza'] , date.today())
+                    query = my_custom_sql(form.cleaned_data['beneficiario'])
+                    print('IDBENEFICIARIO',query[0])
+                    my_update_scadenza_sql(form,pk,query[0])
+                    return HttpResponseRedirect('/')  
+            return HttpResponseRedirect('/')  
+    except:
+        print('Errore metodo POST in update_view_sql')           
 
 #DELETE RICEVUTA
 def delete_ricevuta(request,pk,id):
     if request.method == "POST":
-        my_delete_ricevuta_sql(pk)
-        form = ScadenzeModelForm()
-        giorni = initialize_form_for_update(form,id)
-        data = my_select_ricevute_sql(id)
-        count = my_select_count_sql(id)
+        try:
+            my_delete_ricevuta_sql(pk)
+            form = ScadenzeModelForm()
+            giorni = initialize_form_for_update(form,id)
+            data = my_select_ricevute_sql(id)
+            count = my_select_count_sql(id)
+        except:
+            print('Errore in delete_ricevuta idscadenza: ',id,'idricevuta: ',pk)
         context = {'form':form,'pk':id,"data":data,"count":count,"giorni":giorni}
         return render(request, "update_view_scadenza.html", context)
     else:
@@ -307,74 +329,79 @@ def delete_ricevuta(request,pk,id):
 
 #DOWNLOAD
 def download_file(request,id):
-    dati = my_select_blog_sql(id)
-    blob = dati[0]
-    file = dati[1]
-    writeTofile(blob,file)
-    # Define Django project base directory
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    # Define text file name
-    filename = file
-    # Define the full file path
-    filepath = BASE_DIR + '/templates/upload/' + filename
-    # Open the file for reading content
-    path = open(filepath, 'rb')
-    # Set the mime type
-    mime_type, _ = mimetypes.guess_type(filepath)
-    # Set the return value of the HttpResponse
-    response = HttpResponse(path, content_type=mime_type)
-    # Set the HTTP header for sending to browser
-    response['Content-Disposition'] = "attachment; filename=%s" % filename
-    # Return the response value
-    #CANCELLO IL FILE INSERITO
-    os.remove("templates/upload/"+ filename)
-    return response
+    try:
+        dati = my_select_blog_sql(id)
+        blob = dati[0]
+        file = dati[1]
+        writeTofile(blob,file)
+        # Define Django project base directory
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        # Define text file name
+        filename = file
+        # Define the full file path
+        filepath = BASE_DIR + '/templates/upload/' + filename
+        # Open the file for reading content
+        path = open(filepath, 'rb')
+        # Set the mime type
+        mime_type, _ = mimetypes.guess_type(filepath)
+        # Set the return value of the HttpResponse
+        response = HttpResponse(path, content_type=mime_type)
+        # Set the HTTP header for sending to browser
+        response['Content-Disposition'] = "attachment; filename=%s" % filename
+        #CANCELLO IL FILE INSERITO
+        os.remove("templates/upload/"+ filename)
+        # Return the response value
+        return response
+    except:
+        print('Errore in download_file, id passato',id)
+        return NULL
 
 
 #SCRIVO IL FILE
 def writeTofile(data, filename):
     # Convert binary data to proper format and write it on Hard Disk
     with open('templates/upload/'+filename, 'wb') as file:
-        file.write(data)
-        file.close()
+        try:
+            file.write(data)
+        except:
+            print('Errore nellascrittura del file')
+        finally:
+            file.close()
     print("Stored blob data into: ", filename, "\n")
     
     
                    
 #UPLOAD FILES
 def handle_uploaded_file(f):
-    print('dentro HANDLE')
     with open('templates/upload/'+ f.name, 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
             
             
+            
 #DELETE BENEFICIARIO
 @login_required(login_url='/accounts/login/')
 def delete_view(request, pk):
-    # dictionary for initial data with
-    # field names as keys
     context ={}
-    # fetch the object related to passed id
-    obj = get_object_or_404(ModelBeneficiario, id = pk)
-    if request.method =="POST":
-        # delete object
-        my_delete_beneficiario_sql(pk)
-        # after deleting redirect to
-        # lista beneficiari
-        return HttpResponseRedirect('/')
+    try:
+        obj = get_object_or_404(ModelBeneficiario, id = pk)
+        if request.method =="POST":
+            my_delete_beneficiario_sql(pk)
+            return HttpResponseRedirect('/')
+    except:
+        print('Errore in delete_view')
     return render(request, "update_view.html", context)
 
 #CANCELLA UNA SCADENZA E LE SUE RICEVUTE A CASCATA
 @login_required(login_url='/accounts/login/')
 def delete_view_scadenza(request, pk):
-    # dictionary for initial data with
-    # field names as keys
     context ={}
     if request.method =="POST":
-        # delete object
-        my_delete_scadenza_sql(pk)
-        return HttpResponseRedirect('/')
+        try:
+            my_delete_scadenza_sql(pk)
+            return HttpResponseRedirect('/')
+        except:
+            print('Errore in delete_view_scadenza')
     return render(request, "update_view_scadenza.html", context)
 
 
@@ -382,10 +409,6 @@ def delete_view_scadenza(request, pk):
 def calcolo_giorni_ritardo(d1,d2):
      return (d2-d1).days
 
-
-
-#REGION SQL COMMAND
-from django.db import connection, connections
 #RECUPERA L'IDENTIFICATIVO DEL BENEFICIARIO
 def my_custom_sql(beneficiario):
     with connection.cursor() as cursor:
@@ -414,23 +437,6 @@ def my_delete_beneficiario_sql(pk):
 def my_select_scadenze_sql(iduser):
     with connection.cursor() as cursor:
         cursor.execute("SELECT id, beneficiario, datascadenza, importo,CASE WHEN sollecito =1 THEN 'TRUE' ELSE 'FALSE' END as sollecito, giorniritardo, datapagamento, iduser, idbeneficiario_id FROM scadenzario.scadenzario_modelscadenze WHERE iduser = %s", [iduser])
-        rows = cursor.fetchall()
-        close_connection()
-    return rows
-
-
-#RECUPERA LE SCADENZE PER BENEFICIARIO
-def my_select_search_sql_beneficiario(beneficiario):
-    value=beneficiario
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT id, beneficiario, datascadenza, importo,CASE WHEN sollecito =1 THEN 'TRUE' ELSE 'FALSE' END as sollecito, giorniritardo, datapagamento, iduser, idbeneficiario_id FROM scadenzario.scadenzario_modelscadenze WHERE beneficiario like'%value%'")
-        rows = cursor.fetchall()
-        close_connection()
-    return rows
-#RECUPERA LE SCADENZE PER DATA SCADENZA
-def my_select_search_sql_beneficiario(datascadenza):
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT id, beneficiario, datascadenza, importo,CASE WHEN sollecito =1 THEN 'TRUE' ELSE 'FALSE' END as sollecito, giorniritardo, datapagamento, iduser, idbeneficiario_id FROM scadenzario.scadenzario_modelscadenze WHERE datascadenza like '% datascadenza % '", [datascadenza])
         rows = cursor.fetchall()
         close_connection()
     return rows
