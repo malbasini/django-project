@@ -330,10 +330,13 @@ def download_file(request,id):
     os.remove("templates/upload/"+ filename)
     return response
 
+
+#SCRIVO IL FILE
 def writeTofile(data, filename):
     # Convert binary data to proper format and write it on Hard Disk
     with open('templates/upload/'+filename, 'wb') as file:
         file.write(data)
+        file.close()
     print("Stored blob data into: ", filename, "\n")
     
     
