@@ -1,3 +1,7 @@
+CREATE SCHEMA `scadenzario` DEFAULT CHARACTER SET utf8 ;
+
+
+
 ALTER TABLE `scadenzario`.`scadenzario_modelbeneficiario` 
 DROP FOREIGN KEY `scadenzario_modelbeneficiario_iduser_id_d479c6ca_fk_auth_user_id`;
 ALTER TABLE `scadenzario`.`scadenzario_modelbeneficiario` 
@@ -26,3 +30,8 @@ ADD CONSTRAINT `scadenzario_modelsca_idbeneficiario_id_050fa7a1_fk_scadenzar`
   FOREIGN KEY (`idbeneficiario_id`)
   REFERENCES `scadenzario`.`scadenzario_modelbeneficiario` (`id`)
   ON DELETE CASCADE;
+
+
+ALTER TABLE `scadenzario`.`scadenzario_modelricevute` 
+CHANGE COLUMN `contentFile` `contentFile` LONGBLOB NOT NULL ;
+

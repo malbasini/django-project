@@ -1,11 +1,13 @@
 from cProfile import label
 from calendar import calendar
 from datetime import timezone
+from typing_extensions import Required
 from django import forms
 from django.contrib.auth.models import User
 from pkg_resources import require
 from .models import ModelBeneficiario,ModelScadenze
 from phonenumber_field.formfields import PhoneNumberField
+
 
 class FormRegistrazioneUser(forms.ModelForm):
 
@@ -29,21 +31,21 @@ class FormRegistrazioneUser(forms.ModelForm):
 
      
 class BeneficiarioModelForm(forms.ModelForm):
-    id = forms.IntegerField(widget=forms.HiddenInput(),required=True)
-    beneficiario = forms.CharField(widget=forms.TextInput())
-    descrizione = forms.CharField(widget=forms.Textarea())
+    id = forms.IntegerField(widget=forms.HiddenInput(),required=False)
+    beneficiario = forms.CharField(widget=forms.TextInput(),required=True)
+    descrizione = forms.CharField(widget=forms.Textarea(),required=True)
     email = forms.CharField(widget=forms.EmailInput(),required=False)
     telefono = PhoneNumberField(widget=forms.TextInput(),required=False)
     sitoweb = forms.CharField(widget=forms.URLInput(),required=False)
-    iduser = forms.IntegerField(widget=forms.HiddenInput(),required=False)
+    iduser = forms.IntegerField(widget=forms.HiddenInput(),required=True)
     
     class Meta:
         model = ModelBeneficiario
-        fields = ["beneficiario", "descrizione", "email", "telefono","sitoweb","iduser"]
+        fields = ["id","beneficiario", "descrizione", "email", "telefono","sitoweb","iduser"]
         
 
 class ScadenzeModelForm(forms.ModelForm):
-    id = forms.IntegerField(label='id',widget=forms.HiddenInput(),required=True)
+    id = forms.IntegerField(label='id',widget=forms.HiddenInput(),required=False)
     beneficiario = forms.ModelChoiceField(queryset = ModelBeneficiario.objects.all() , required=True,label='Beneficiario')
     datascadenza = forms.DateField(widget=forms.widgets.TextInput(attrs={'type': 'date','format':'d/m/Y'}),label='Data Scadenza')
     importo = forms.DecimalField(required=True,label='Importo')

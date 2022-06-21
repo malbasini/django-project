@@ -40,7 +40,7 @@ class ModelRicevute(models.Model):
     typeFile = models.CharField(max_length=50,null=True)
     contentFile = models.FileField()
     beneficiario = models.CharField(max_length=150)
-    path = models.CharField(max_length=450,null=True)
+    path = models.CharField(max_length=1450,null=True)
     scadenze = models.ForeignKey(ModelScadenze, on_delete = models.CASCADE, null=True,related_name = "related_scadenze",default=0)
     
     def __str__(self):
