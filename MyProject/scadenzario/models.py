@@ -1,3 +1,4 @@
+from ast import Import
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -10,7 +11,7 @@ class ModelBeneficiario(models.Model):
     email = models.EmailField(null=True)
     telefono = PhoneNumberField(null=True)
     sitoweb = models.URLField(null=True)
-    iduser = models.BigIntegerField()
+    iduser = models.BigIntegerField(null=False)
     
     def __str__(self):
         return self.beneficiario

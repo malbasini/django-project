@@ -1,0 +1,28 @@
+ALTER TABLE `scadenzario`.`scadenzario_modelbeneficiario` 
+DROP FOREIGN KEY `scadenzario_modelbeneficiario_iduser_id_d479c6ca_fk_auth_user_id`;
+ALTER TABLE `scadenzario`.`scadenzario_modelbeneficiario` 
+ADD CONSTRAINT `scadenzario_modelbeneficiario_iduser_id_d479c6ca_fk_auth_user_id`
+  FOREIGN KEY (`iduser_id`)
+  REFERENCES `scadenzario`.`auth_user` (`id`)
+  ON DELETE CASCADE;
+
+
+
+
+ALTER TABLE `scadenzario`.`scadenzario_modelricevute` 
+DROP FOREIGN KEY `scadenzario_modelric_scadenze_id_78113a0a_fk_scadenzar`;
+ALTER TABLE `scadenzario`.`scadenzario_modelricevute` 
+ADD CONSTRAINT `scadenzario_modelric_scadenze_id_78113a0a_fk_scadenzar`
+  FOREIGN KEY (`scadenze_id`)
+  REFERENCES `scadenzario`.`scadenzario_modelscadenze` (`id`)
+  ON DELETE CASCADE;
+
+
+
+ALTER TABLE `scadenzario`.`scadenzario_modelscadenze` 
+DROP FOREIGN KEY `scadenzario_modelsca_idbeneficiario_id_050fa7a1_fk_scadenzar`;
+ALTER TABLE `scadenzario`.`scadenzario_modelscadenze` 
+ADD CONSTRAINT `scadenzario_modelsca_idbeneficiario_id_050fa7a1_fk_scadenzar`
+  FOREIGN KEY (`idbeneficiario_id`)
+  REFERENCES `scadenzario`.`scadenzario_modelbeneficiario` (`id`)
+  ON DELETE CASCADE;

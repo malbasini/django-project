@@ -63,19 +63,18 @@ def registrazione(request):
 
 @login_required(login_url='/accounts/login/')
 def creaBeneficiarioView(request):
-    try:
         if request.method == 'POST':
             form = BeneficiarioModelForm(request.POST)
+            user = request.user
+            ModelBeneficiario.user=user
+            form.iduser=user.pk
             if form.is_valid():
-                form.iduser = request.POST.get('iduser')
                 form.save()
                 return HttpResponseRedirect('/')
         else:
             form = BeneficiarioModelForm()
-    except:
-        print('Errore in fase di inserimento del beneficiario')
-    context = {'form':form}
-    return render(request,'beneficiario/create_beneficiario.html',context)
+        context = {'form':form}
+        return render(request,'beneficiario/create_beneficiario.html',context)
 
 
 @login_required(login_url='/accounts/login/')

@@ -29,7 +29,7 @@ class FormRegistrazioneUser(forms.ModelForm):
 
      
 class BeneficiarioModelForm(forms.ModelForm):
-    id = forms.IntegerField(widget=forms.HiddenInput(),required=False)
+    id = forms.IntegerField(widget=forms.HiddenInput(),required=True)
     beneficiario = forms.CharField(widget=forms.TextInput())
     descrizione = forms.CharField(widget=forms.Textarea())
     email = forms.CharField(widget=forms.EmailInput(),required=False)
@@ -39,11 +39,11 @@ class BeneficiarioModelForm(forms.ModelForm):
     
     class Meta:
         model = ModelBeneficiario
-        fields = ["id","beneficiario", "descrizione", "email", "telefono","sitoweb","iduser"]
+        fields = ["beneficiario", "descrizione", "email", "telefono","sitoweb","iduser"]
         
 
 class ScadenzeModelForm(forms.ModelForm):
-    id = forms.IntegerField(label='id',widget=forms.HiddenInput(),required=False)
+    id = forms.IntegerField(label='id',widget=forms.HiddenInput(),required=True)
     beneficiario = forms.ModelChoiceField(queryset = ModelBeneficiario.objects.all() , required=True,label='Beneficiario')
     datascadenza = forms.DateField(widget=forms.widgets.TextInput(attrs={'type': 'date','format':'d/m/Y'}),label='Data Scadenza')
     importo = forms.DecimalField(required=True,label='Importo')
