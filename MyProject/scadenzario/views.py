@@ -109,7 +109,7 @@ def creaScadenzaView(request):
 def index(request):
     object_list =  ModelBeneficiario.objects.filter(iduser=request.user.pk)
     page_num = request.GET.get('page', 1)
-    paginator = Paginator(object_list, 6) # 6 employees per page
+    paginator = Paginator(object_list, 3) # 6 employees per page
     try:
         page_obj = paginator.page(page_num)
     except PageNotAnInteger:
@@ -126,7 +126,7 @@ def index(request):
 def index_scadenze(request):
     object_list =  ModelScadenze.objects.filter(iduser=request.user.pk)
     page_num = request.GET.get('page', 1)
-    paginator = Paginator(object_list, 6) # 6 employees per page
+    paginator = Paginator(object_list, 3) # 6 employees per page
     try:
          page_obj = paginator.page(page_num)
     except PageNotAnInteger:
@@ -141,43 +141,72 @@ def index_scadenze(request):
 @login_required(login_url='/accounts/login/')
 def get_queryset(request):
     query = request.GET.get("q")
-    page_obj = ModelBeneficiario.objects.filter(Q(beneficiario__icontains=query))
-    page_num = request.GET.get('page', 1)
-    paginator = Paginator(page_obj, 6) # 6 employees per page
-    try:
-        page_obj = paginator.page(page_num)
-    except PageNotAnInteger:
-        # if page is not an integer, deliver the first page
-        page_obj = paginator.page(1)
-    except EmptyPage:
-        # if the page is out of range, deliver the last page
-        page_obj = paginator.page(paginator.num_pages)
-    return render(request, 'beneficiario/lista_beneficiario.html', {'page_obj': page_obj ,'query':query})
+    if query != None:
+        page_obj = ModelBeneficiario.objects.filter(Q(beneficiario__icontains=query))
+        page_num = request.GET.get('page', 1)
+        paginator = Paginator(page_obj, 3) # 6 employees per page
+        try:
+            page_obj = paginator.page(page_num)
+        except PageNotAnInteger:
+            # if page is not an integer, deliver the first page
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            # if the page is out of range, deliver the last page
+            page_obj = paginator.page(paginator.num_pages)
+        return render(request, 'beneficiario/lista_beneficiario.html', {'page_obj': page_obj ,'query':query})
+    else:
+        object_list =  ModelBeneficiario.objects.filter(iduser=request.user.pk)
+        page_num = request.GET.get('page', 1)
+        paginator = Paginator(object_list, 3) # 6 employees per page
+        try:
+            page_obj = paginator.page(page_num)
+        except PageNotAnInteger:
+            # if page is not an integer, deliver the first page
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            # if the page is out of range, deliver the last page
+            page_obj = paginator.page(paginator.num_pages)
+        return render(request, 'beneficiario/lista_beneficiario.html', {'page_obj': page_obj})
 
 #RICERCA SCADENZE
 @login_required(login_url='/accounts/login/')
 def get_queryset_scadenze(request):
     query = request.GET.get("q")
-    if query != '':
-        try:
-            datetime_object = datetime.strptime(query, '%d/%m/%Y').date()
-            if isinstance(datetime_object, date):
-                page_obj = ModelScadenze.objects.filter(Q(datascadenza__icontains=datetime_object))
-        except:
+    if query != None:
+        if query != '':
+            try:
+                datetime_object = datetime.strptime(query, '%d/%m/%Y').date()
+                if isinstance(datetime_object, date):
+                    page_obj = ModelScadenze.objects.filter(Q(datascadenza__icontains=datetime_object))
+            except:
+                page_obj = ModelScadenze.objects.filter(Q(beneficiario__icontains=query))
+        else:
             page_obj = ModelScadenze.objects.filter(Q(beneficiario__icontains=query))
+        page_num = request.GET.get('page', 1)
+        paginator = Paginator(page_obj, 3) # 6 employees per page
+        try:
+            page_obj = paginator.page(page_num)
+        except PageNotAnInteger:
+            #if page is not an integer, deliver the first page
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            # if the page is out of range, deliver the last page
+            page_obj = paginator.page(paginator.num_pages)
+        return render(request, 'scadenze/lista_scadenze.html', {'page_obj': page_obj ,'query':query})
     else:
-        page_obj = ModelScadenze.objects.filter(Q(beneficiario__icontains=query))
-    page_num = request.GET.get('page', 1)
-    paginator = Paginator(page_obj, 6) # 6 employees per page
-    try:
-         page_obj = paginator.page(page_num)
-    except PageNotAnInteger:
-          #if page is not an integer, deliver the first page
-          page_obj = paginator.page(1)
-    except EmptyPage:
-          # if the page is out of range, deliver the last page
-         page_obj = paginator.page(paginator.num_pages)
-    return render(request, 'scadenze/lista_scadenze.html', {'page_obj': page_obj ,'query':query})
+        object_list =  ModelScadenze.objects.filter(iduser=request.user.pk)
+        page_num = request.GET.get('page', 1)
+        paginator = Paginator(object_list, 3) # 6 employees per page
+        try:
+            page_obj = paginator.page(page_num)
+        except PageNotAnInteger:
+            # if page is not an integer, deliver the first page
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            # if the page is out of range, deliver the last page
+            page_obj = paginator.page(paginator.num_pages)
+        return render(request, 'scadenze/lista_scadenze.html', {'page_obj': page_obj})
+
 
 #DETTAGLIO BENEFICIARIO
 @login_required(login_url='/accounts/login/')
@@ -413,59 +442,81 @@ def calcolo_giorni_ritardo(d1,d2):
 
 #RECUPERA L'IDENTIFICATIVO DEL BENEFICIARIO
 def my_custom_sql(beneficiario):
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT id FROM scadenzario.scadenzario_modelbeneficiario WHERE beneficiario = %s", [beneficiario])
-        row = cursor.fetchone()
-    close_connection()
-    return row
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT id FROM scadenzario.scadenzario_modelbeneficiario WHERE beneficiario = %s", [beneficiario])
+            row = cursor.fetchone()
+        close_connection()
+        return row
+    except Exception as e:
+         print(str(e))
+    
 #INSERISCE UNA SCADENZA
 def my_insert_sql(form,idbeneficiario):
-    with connection.cursor() as cursor:
-        sql = "INSERT INTO scadenzario_modelscadenze (beneficiario,datascadenza,importo,sollecito,giorniritardo,datapagamento,iduser,idbeneficiario_id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-        val = (form.cleaned_data['beneficiario'],form.cleaned_data['datascadenza'],form.cleaned_data['importo'],form.cleaned_data['sollecito'],form.giorniritardo,form.cleaned_data['datapagamento'],form.iduser,idbeneficiario)
-        cursor.execute(sql, val)
-        print(cursor.rowcount, "record inserted.")
-        close_connection()
+    try:
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO scadenzario_modelscadenze (beneficiario,datascadenza,importo,sollecito,giorniritardo,datapagamento,iduser,idbeneficiario_id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+            val = (form.cleaned_data['beneficiario'],form.cleaned_data['datascadenza'],form.cleaned_data['importo'],form.cleaned_data['sollecito'],form.giorniritardo,form.cleaned_data['datapagamento'],form.iduser,idbeneficiario)
+            cursor.execute(sql, val)
+            print(cursor.rowcount, "record inserted.")
+            close_connection()
+    except Exception as e:
+        print(str(e))
             
 #CANCELLA UN BENEFICIARIO IN BASE ALLA CHIAVE PRIMARIA     
 def my_delete_beneficiario_sql(pk):
-    with connection.cursor() as cursor:
-        sql = "DELETE FROM scadenzario_modelbeneficiario WHERE id = %s"
-        val = [pk]
-        cursor.execute(sql, val)
-        close_connection()
+    try:
+        with connection.cursor() as cursor:
+            sql = "DELETE FROM scadenzario_modelbeneficiario WHERE id = %s"
+            val = [pk]
+            cursor.execute(sql, val)
+            close_connection()
+    except Exception as e:
+        print(str(e))
         
 #RECUPERA LE SCADENZE PER UTENTE
 def my_select_scadenze_sql(iduser):
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT id, beneficiario, datascadenza, importo,CASE WHEN sollecito =1 THEN 'TRUE' ELSE 'FALSE' END as sollecito, giorniritardo, datapagamento, iduser, idbeneficiario_id FROM scadenzario.scadenzario_modelscadenze WHERE iduser = %s", [iduser])
-        rows = cursor.fetchall()
-        close_connection()
-    return rows
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT id, beneficiario, datascadenza, importo,CASE WHEN sollecito =1 THEN 'TRUE' ELSE 'FALSE' END as sollecito, giorniritardo, datapagamento, iduser, idbeneficiario_id FROM scadenzario.scadenzario_modelscadenze WHERE iduser = %s", [iduser])
+            rows = cursor.fetchall()
+            close_connection()
+        return rows
+    except Exception as e:
+        print(str(e))
 
 #DETTAGLIO SCADENZA
 def my_select_dettaglio_scadenza_sql(id):
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT id, beneficiario, datascadenza, importo, CASE WHEN sollecito =1 THEN 'TRUE' ELSE 'FALSE' END as sollecito, giorniritardo, datapagamento, iduser, idbeneficiario_id FROM scadenzario.scadenzario_modelscadenze WHERE id = %s", [id])
-        row = cursor.fetchone()
-        close_connection()
-    return row
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT id, beneficiario, datascadenza, importo, CASE WHEN sollecito =1 THEN 'TRUE' ELSE 'FALSE' END as sollecito, giorniritardo, datapagamento, iduser, idbeneficiario_id FROM scadenzario.scadenzario_modelscadenze WHERE id = %s", [id])
+            row = cursor.fetchone()
+            close_connection()
+        return row
+    except Exception as e:
+        print(str(e))
 
 #CANCELLA UNA SCADENZA
 def my_delete_scadenza_sql(pk):
-    with connection.cursor() as cursor:
-        sql = "DELETE FROM scadenzario_modelscadenze WHERE id = %s"
-        val = [pk]
-        cursor.execute(sql, val)
-        close_connection()
+    try:
+        with connection.cursor() as cursor:
+            sql = "DELETE FROM scadenzario_modelscadenze WHERE id = %s"
+            val = [pk]
+            cursor.execute(sql, val)
+            close_connection()
+    except Exception as e:
+        print(str(e))
         
 #UPDATE DI UNA SCADENZA
 def my_update_scadenza_sql(form,pk,idbeneficiario):
-    with connection.cursor() as cursor:
-        sql = "UPDATE scadenzario_modelscadenze SET beneficiario = %s, datascadenza=%s, importo=%s, sollecito=%s, giorniritardo=%s, datapagamento=%s,idbeneficiario_id=%s WHERE id = %s"
-        val = [form.cleaned_data['beneficiario'],form.cleaned_data['datascadenza'],form.cleaned_data['importo'],form.cleaned_data['sollecito'],form.giorniritardo,form.cleaned_data['datapagamento'],idbeneficiario,pk]
-        cursor.execute(sql, val)
-        close_connection()
+    try:
+        with connection.cursor() as cursor:
+            sql = "UPDATE scadenzario_modelscadenze SET beneficiario = %s, datascadenza=%s, importo=%s, sollecito=%s, giorniritardo=%s, datapagamento=%s,idbeneficiario_id=%s WHERE id = %s"
+            val = [form.cleaned_data['beneficiario'],form.cleaned_data['datascadenza'],form.cleaned_data['importo'],form.cleaned_data['sollecito'],form.giorniritardo,form.cleaned_data['datapagamento'],idbeneficiario,pk]
+            cursor.execute(sql, val)
+            close_connection()
+    except Exception as e:
+        print(str(e))
     
 #INSERISCE UNA RICEVUTA
 def my_insert_sql_ricevuta(nome,tipofile,contenuto,beneficiario,path,idscadenza):
@@ -481,36 +532,48 @@ def my_insert_sql_ricevuta(nome,tipofile,contenuto,beneficiario,path,idscadenza)
             
  #CANCELLA UNA RICEVUTA
 def my_delete_ricevuta_sql(id):
-    with connection.cursor() as cursor:
-        sql = "DELETE FROM scadenzario_modelricevute WHERE id = %s"
-        val = [id]
-        cursor.execute(sql, val)
-        close_connection()  
+    try:
+        with connection.cursor() as cursor:
+            sql = "DELETE FROM scadenzario_modelricevute WHERE id = %s"
+            val = [id]
+            cursor.execute(sql, val)
+            close_connection()
+    except Exception as e:
+        print(str(e))  
         
 #RECUPERA LE RICEVUTE PER IDSCADENZA
 def my_select_ricevute_sql(idscadenza):
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT id, nomeFile,typeFile,beneficiario,scadenze_id FROM scadenzario_modelricevute WHERE scadenze_id = %s", [idscadenza])
-        rows = cursor.fetchall()
-        close_connection()
-    return rows
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT id, nomeFile,typeFile,beneficiario,scadenze_id FROM scadenzario_modelricevute WHERE scadenze_id = %s", [idscadenza])
+            rows = cursor.fetchall()
+            close_connection()
+        return rows
+    except Exception as e:
+        print(str(e))
 
 #RECUPERA IL NUMERO DI RICEVUTE
 def my_select_count_sql(idscadenza):
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT id FROM scadenzario_modelricevute WHERE scadenze_id = %s", [idscadenza])
-        row = cursor.fetchone()
-        close_connection()
-    return row
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT id FROM scadenzario_modelricevute WHERE scadenze_id = %s", [idscadenza])
+            row = cursor.fetchone()
+            close_connection()
+        return row
+    except Exception as e:
+        print(str(e))
 
 
  #RECUPERA IL CAMPO BLOG
 def my_select_blog_sql(id):
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT contentFile,nomeFile,typeFile FROM scadenzario.scadenzario_modelricevute WHERE id = %s", [id])
-        row = cursor.fetchone()
-        close_connection()
-    return row
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT contentFile,nomeFile,typeFile FROM scadenzario.scadenzario_modelricevute WHERE id = %s", [id])
+            row = cursor.fetchone()
+            close_connection()
+        return row
+    except Exception as b:
+        print(str(b))
    
 #CHIUDE TUTTE LE CONNESSIONI AL DATABASE
 def close_connection():

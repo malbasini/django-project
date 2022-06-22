@@ -73,7 +73,7 @@
                         {% if scadenza.giorniritardo >= 0 %}<span class="myclass">{{ scadenza.giorniritardo }}</span> {% else %} {{ scadenza.giorniritardo }} {% endif %}
                     </td>
                     <td> 
-                        {{ scadenza.datapagamento}}
+                        {%  if scadenza.datapagamento != None %}{{ scadenza.datapagamento }} {% else %} {{ ' ' }}{% endif %}
                     </td>
                     <td>
                         <div class="d-flex align-items-center">
