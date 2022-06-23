@@ -20,8 +20,19 @@
 <br>
 <section>
     <form method="post" action="{% url 'aggiorna' pk=id  %}">
-          {% csrf_token %}
-          {{ error }}
+        <br>
+        {% csrf_token %}
+        {{ error }}
+          <div class="row">
+              <div class="col-md-10">
+              </div>
+              <div class="col-md-2 d-flex align-items-right">
+                <br>
+                <button type="submit" class="btn btn-primary btn-lg btn-block btn-space">Salva</button>
+                <button class="btn btn-danger btn-lg ml-3" type="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fas fa-trash-alt"></i></button>
+              </div>
+          </div>
+          <br
           <div class='container'>
                 <div class='row'>
                   <div class='col-md-12 myclass'>
@@ -44,15 +55,7 @@
                     {{ form.sitoweb|as_crispy_field}}
                   </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <button type="submit" class="btn btn-primary btn-lg btn-block btn-space">Salva</button>
-                        <button class="btn btn-danger btn-lg ml-3" type="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                    <div class="col-md-6">
-                      <input type='hidden' value={{ request.user.pk }} id='iduser' name='iduser'>  
-                    </div>  
-                </div>
+                <input type='hidden' value={{ request.user.pk }} id='iduser' name='iduser'>  
           </div>
     </form>
     <form method="post" action="{% url 'delete_view' pk=id %}">
