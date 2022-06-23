@@ -42,7 +42,6 @@
     <br>
     <div class="container">
       <div class="row justify-content-center">
-        <div class="col-md-6">
           <div class="alert alert-success">
             <h2 style="text-align:center;">
                 <b>
@@ -51,7 +50,6 @@
                 </div> 
           </h2>
         </div>
-      </div>
     </div>
   </div>  
   {% if response %} {% autoescape off %} {% endautoescape %} 
@@ -59,14 +57,12 @@
   <br>
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-md-6">
         <div class="alert alert-secondary alert-dismissible">
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
           <h2 style="text-align:center;">
               <div>{{response}}</div> 
         </h2>
       </div>
-    </div>
   </div>
 </div>  
 {% endif %}
