@@ -70,37 +70,53 @@
             <div class="container">
                 <form method="post" action="{% url 'upload_files' pk=pk  %}" novalidate enctype="multipart/form-data" >
                     {% csrf_token %}
-                    <div class="row justify-content-center">
-                        <div class="col-md-6">
-                            <div id="msg"></div>
-                            <div class="my-3">
-                              {{ error }}
-                              {{ form.beneficiario|as_crispy_field }}
-                              {{ form.datascadenza|as_crispy_field }}
-                              {{ form.importo|as_crispy_field }}
-                              {{ form.sollecito|as_crispy_field }}
-                              {% if giorni >= 0 %}{{ form.giorniritardo|add_class:"myclass"|as_crispy_field  }} {% else %} {{ form.giorniritardo|as_crispy_field }} {% endif %}
-                              {{ form.datapagamento|as_crispy_field }}
+                    <div class='container'>
+                      <div class='row'>
+                          <div class='col-md-6 myclass'>
+                            {{ form.beneficiario|as_crispy_field}}
+                          </div>
+                          <div class='col-md-6 myclass'>
+                            {{ form.datascadenza|as_crispy_field}}
+                          </div>
+                        </div>
+                        <div class='row'>
+                          <div class='col-md-6 myclass'>
+                            {{ form.importo|as_crispy_field}}
+                          </div>
+                          <div class='col-md-6'>
+                            {{ form.sollecito|as_crispy_field}}
+                          </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-md-6'>
+                              {{ form.giorniritardo|as_crispy_field}}
+                            </div>
+                            <div class='col-md-6'>
+                              {{ form.datapagamento|as_crispy_field}}
                             </div>
                         </div>
-                    </div
-                    <br>
-                    <div class="row justify-content-center">
-                        {% csrf_token %}
-                        <div class="col-md-6">
-                                <fieldset name="Multiple Files Upload">
+                        <div class="row">
+                            <div class='col-md-6'>
+                            <fieldset name="Multiple Files Upload">
                                     <p>
-                                        
-                                        <input type="file" id="multiFiles" name="files" multiple="multiple" class="btn btn-success" />
-                                        <button id="upload" class="btn btn-warning"><i class="fas fa-cog"></i>Upload</button>
+                                      <input type="file" id="multiFiles" name="files" multiple="multiple" class="btn btn-success" />
+                                      <button id="upload" class="btn btn-warning"><i class="fas fa-cog"></i>Upload</button>
                                     </p>
-                                </fieldset>
-                            <br>
-                            <br>
-                            <button type="submit" class="btn btn-primary btn-lg btn-block">Salva</button>
-                            <button class="btn btn-danger btn-lg ml-3" type="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fas fa-trash-alt"></i></button>
+                              </fieldset>
+                            </div>
+                            <div class='col-md-6'>
+                            </div>
+                            <div class="row">
+                              <div class='col-md-6'>
+                                    <br>
+                                    <br>
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block">Salva</button>
+                                    <button class="btn btn-danger btn-lg ml-3" type="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fas fa-trash-alt"></i></button>
+                              </div>
+                              <div class='col-md-6'>
+                            </div>
+                            </div>
                         </div>
-                    </div>
                 </form>
             </div>
            <form method="post" action="{% url 'delete_view_scadenza' pk=pk %}">
