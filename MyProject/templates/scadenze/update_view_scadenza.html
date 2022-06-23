@@ -67,9 +67,20 @@
 </div>  
 {% endif %}
 <section>
+  <br>
             <div class="container">
-                <form method="post" action="{% url 'upload_files' pk=pk  %}" novalidate enctype="multipart/form-data" >
+                    <form method="post" action="{% url 'upload_files' pk=pk  %}" novalidate enctype="multipart/form-data" >
                     {% csrf_token %}
+                      <div class="row">
+                          <div class="col-md-10">
+                          </div>
+                          <div class="col-md-2 d-flex align-items-right">
+                            <br>
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">Salva</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <button class="btn btn-danger btn-lg ml-3" type="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fas fa-trash-alt"></i></button>
+                          </div>
+                      </div>
+                      <br>
                     <div class='container'>
                       <div class='row'>
                           <div class='col-md-6 myclass'>
@@ -96,7 +107,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class='col-md-6'>
+                            <div class='col-md-9'>
                             <fieldset name="Multiple Files Upload">
                                     <p>
                                       <input type="file" id="multiFiles" name="files" multiple="multiple" class="btn btn-success" />
@@ -104,17 +115,7 @@
                                     </p>
                               </fieldset>
                             </div>
-                            <div class='col-md-6'>
-                            </div>
-                            <div class="row">
-                              <div class='col-md-6'>
-                                    <br>
-                                    <br>
-                                    <button type="submit" class="btn btn-primary btn-lg btn-block">Salva</button>
-                                    <button class="btn btn-danger btn-lg ml-3" type="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fas fa-trash-alt"></i></button>
-                              </div>
-                              <div class='col-md-6'>
-                            </div>
+                            <div class='col-md-3'>
                             </div>
                         </div>
                 </form>
