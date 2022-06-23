@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load crispy_forms_field %}
+{% load widget_tweaks %}
 {% block content %}
 <br>
 <br>
@@ -17,22 +19,41 @@
   </div>  
 <br>
 <section>
-    <form method="post" action="{% url 'aggiorna' pk=id %}">
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                  {% csrf_token %}
-                  {{ error }}
-                  {{ form|crispy }}
+    <form method="post" action="{% url 'aggiorna' pk=id  %}">
+          {% csrf_token %}
+          {{ error }}
+          <div class='container'>
+                <div class='row'>
+                  <div class='col-md-12 myclass'>
+                    {{ form.descrizione|as_crispy_field}}
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <button type="submit" class="btn btn-primary btn-lg btn-block btn-space">Salva</button>
-                    <button class="btn btn-danger btn-lg ml-3" type="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fas fa-trash-alt"></i></button>
+                <div class='row'>
+                  <div class='col-md-6 myclass'>
+                    {{ form.beneficiario|attr:"readonly:readonly"|as_crispy_field }}
+                  </div>
+                  <div class='col-md-6'>
+                    {{ form.email|as_crispy_field}}
+                  </div>
                 </div>
-            </div>
-        </div>
+                <div class='row'>
+                  <div class='col-md-6'>
+                    {{ form.telefono|as_crispy_field}}
+                  </div>
+                  <div class='col-md-6'>
+                    {{ form.sitoweb|as_crispy_field}}
+                  </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-primary btn-lg btn-block btn-space">Salva</button>
+                        <button class="btn btn-danger btn-lg ml-3" type="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                    <div class="col-md-6">
+                      <input type='hidden' value={{ request.user.pk }} id='iduser' name='iduser'>  
+                    </div>  
+                </div>
+          </div>
     </form>
     <form method="post" action="{% url 'delete_view' pk=id %}">
     {% csrf_token %}

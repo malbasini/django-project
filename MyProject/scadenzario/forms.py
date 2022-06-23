@@ -37,11 +37,11 @@ class BeneficiarioModelForm(forms.ModelForm):
     email = forms.CharField(widget=forms.EmailInput(),required=False)
     telefono = PhoneNumberField(widget=forms.TextInput(),required=False)
     sitoweb = forms.CharField(widget=forms.URLInput(),required=False)
-    iduser = forms.IntegerField(widget=forms.HiddenInput(),required=True)
+    iduser = forms.IntegerField(widget=forms.HiddenInput(),required=False)
     
     class Meta:
         model = ModelBeneficiario
-        fields = ["id","beneficiario", "descrizione", "email", "telefono","sitoweb","iduser"]
+        fields = ["beneficiario", "descrizione", "email", "telefono","sitoweb","iduser"]
         
 
 class ScadenzeModelForm(forms.ModelForm):

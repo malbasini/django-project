@@ -22,25 +22,44 @@
         </div>
     </div>
   </div>   
-    <div class="container">
     <br>
     <br>
-      <form action="" method="POST" novalidate>
+      <form action="{% url 'scadenza_view' %}" method="POST" novalidate>
         {% csrf_token %}
-        <div class="row justify-content-center">
-          <div class="col-md-6">
-            {{ error }}
-            {{ form|crispy }}
-          </div>
-        </div>
-        <input type="hidden" value={{ request.user.pk }} name="iduser"/>
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <input type="submit" class = "btn btn-danger" value="Invia!">
-            </div>
+        {{ error }}
+        <div class='container'>
+            <div class='row'>
+                <div class='col-md-6 myclass'>
+                  {{ form.beneficiario|as_crispy_field}}
+                </div>
+                <div class='col-md-6 myclass'>
+                  {{ form.datascadenza|as_crispy_field}}
+                </div>
+              </div>
+              <div class='row'>
+                <div class='col-md-6 myclass'>
+                  {{ form.importo|as_crispy_field}}
+                </div>
+                <div class='col-md-6'>
+                  {{ form.sollecito|as_crispy_field}}
+                </div>
+              </div>
+              <div class='row'>
+                  <div class='col-md-6'>
+                    {{ form.giorniritardo|as_crispy_field}}
+                  </div>
+                  <div class='col-md-6'>
+                    {{ form.datapagamento|as_crispy_field}}
+                  </div>
+              </div>
+              <div class="col-md-6">
+                    <input type="submit" class = "btn btn-danger" value="Invia!">
+              </div>
+              <div class="col-md-6">
+                    <input type="hidden" value={{ request.user.pk }} name="iduser"/>
+              </div>
         </div>
       </form>
-    </div>
     {% endblock content %}
   </body>
 </html>

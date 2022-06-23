@@ -1,9 +1,11 @@
 from asyncio.windows_events import NULL
+from atexit import register
 import base64
 from distutils.log import error
 from encodings import utf_8
 from http.client import HTTPResponse
 import io
+from msilib import type_binary
 from queue import Empty
 from select import select
 from this import s
@@ -64,13 +66,24 @@ def registrazione(request):
 
 @login_required(login_url='/accounts/login/')
 def creaBeneficiarioView(request):
+    context = {}
+    form = {}
     try:
         if request.method == 'POST':
             form = BeneficiarioModelForm(request.POST)
-            form.iduser = request.POST.get('iduser')
+            form.iduser = request.user.id
             if form.is_valid():
-                form.save()
-                return HttpResponseRedirect('/')
+                beneficiario = form.cleaned_data['beneficiario']
+                count = my_custom_sql_beneficiario(beneficiario)
+                if count[0] > 0:
+                    response = "HAI GIA' INSERITO QUESTO BENEFICIARIO!"
+                    context = {'form':form,"response":response}
+                    return render(request,'beneficiario/create_beneficiario.html',context)
+                else: 
+                    form.save()
+                    return HttpResponseRedirect('/')
+            else:
+                print(form.errors.as_data()) # here you print errors to terminal
         else:
             form = BeneficiarioModelForm()
     except Exception as e:
@@ -207,7 +220,6 @@ def get_queryset_scadenze(request):
             page_obj = paginator.page(paginator.num_pages)
         return render(request, 'scadenze/lista_scadenze.html', {'page_obj': page_obj})
 
-
 #DETTAGLIO BENEFICIARIO
 @login_required(login_url='/accounts/login/')
 def detail_view(request,pk):
@@ -237,16 +249,22 @@ def detail_view_scadenza(request,pk):
 @login_required(login_url='/accounts/login/')
 def update_view(request, pk):
     try:
-        context ={}
-        obj = get_object_or_404(ModelBeneficiario, id = pk)
-        form = BeneficiarioModelForm(request.POST or None, instance = obj)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect("/")
+        form = {}
+        context = {}
+        data={}
+        data = ModelBeneficiario.objects.get(id = pk)
+        if request.method == 'POST':
+            form = BeneficiarioModelForm(request.POST)
+            form.iduser= int(request.POST.get('iduser'))
+            if form.is_valid():
+                my_update_beneficiario_sql(form,form.iduser,pk)
+                return HttpResponseRedirect('/')
+        else:
+            form = BeneficiarioModelForm(request.GET or None, instance = data)
     except Exception as e:
-        print('errore in update_view: ' + str(e))
-    context = {'form':form,'id':pk}
-    return render(request, "update_view.html", context)
+        print('Errore nella creazione del beneficiario. ' + str(e))
+    context = {'form':form,"id":pk}
+    return render(request,'beneficiario/update_view.html',context)
 
 
 #GET SCADENZA FOR UPDATE
@@ -517,6 +535,33 @@ def my_update_scadenza_sql(form,pk,idbeneficiario):
             close_connection()
     except Exception as e:
         print(str(e))
+        
+        
+#UPDATE DI UN BENEFICIARIO
+def my_update_beneficiario_sql(form,iduser,pk):
+    try:
+        with connection.cursor() as cursor:
+            sql = "UPDATE scadenzario_modelbeneficiario SET descrizione = %s, email = %s, telefono = %s, sitoweb = %s, iduser=%s WHERE id = %s"
+            val = [form.cleaned_data['descrizione'],form.cleaned_data['email'],form.cleaned_data['telefono'],form.cleaned_data['sitoweb'],iduser, pk]
+            cursor.execute(sql, val)
+            close_connection()
+    except Exception as e:
+        print(str(e))
+ 
+#COUNT DEL BENEFICIARIO
+def my_custom_sql_beneficiario(beneficiario):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT COUNT(*) FROM scadenzario.scadenzario_modelbeneficiario WHERE beneficiario = %s", [beneficiario])
+            row = cursor.fetchone()
+        close_connection()
+        return row
+    except Exception as e:
+         print(str(e))
+    
+ 
+ 
+ 
     
 #INSERISCE UNA RICEVUTA
 def my_insert_sql_ricevuta(nome,tipofile,contenuto,beneficiario,path,idscadenza):

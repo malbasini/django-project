@@ -6,12 +6,15 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class ModelBeneficiario(models.Model):
     id = models.AutoField(primary_key=True)
-    beneficiario = models.CharField(max_length=150,unique=True)
+    beneficiario = models.CharField(max_length=150,unique=False)
     descrizione = models.TextField(max_length=1500)
     email = models.EmailField(null=True)
     telefono = PhoneNumberField(null=True)
     sitoweb = models.URLField(null=True)
     iduser = models.BigIntegerField(null=False)
+    
+    class Meta:
+        db_table = 'scadenzario_modelbeneficiario'
     
     def __str__(self):
         return self.beneficiario
@@ -42,6 +45,10 @@ class ModelRicevute(models.Model):
     beneficiario = models.CharField(max_length=150)
     path = models.CharField(max_length=1450,null=True)
     scadenze = models.ForeignKey(ModelScadenze, on_delete = models.CASCADE, null=True,related_name = "related_scadenze",default=0)
+    
+    class Meta:
+        db_table = 'scadenzario_modelricevute'
+    
     
     def __str__(self):
         return self.nomeFile
