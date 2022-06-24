@@ -44,7 +44,17 @@
         <table class="table table-striped table-hover">
             <thead class="table-dark">
                 <tr>
-                    <th scope="col">Beneficiario</th>
+                    {% if id is null %}
+                        {% with id=1 %}
+                        <th scope="col"><a href="{% url 'orderby_beneficiario' id=id %}"><i class="fa fa-sort-up" aria-hidden="true"></i> Beneficiario</a></th>
+                        {% endwith %}
+                    {% else %}
+                        {% if id is 1 %}
+                                <th scope="col"><a href="{% url 'orderby_beneficiario' id=id %}"><i class="fa fa-sort-up" aria-hidden="true"></i> Beneficiario</a></th>
+                        {% else %}
+                                <th scope="col"><a href="{% url 'orderby_beneficiario' id=id %}"><i class="fa fa-sort-down" aria-hidden="true"></i> Beneficiario</a></th>
+                        {% endif %}
+                    {% endif %}
                     <th scope="col">Descrizione</th>
                     <th scope="col">Email</th>
                     <th scope="col">Telefono</th>

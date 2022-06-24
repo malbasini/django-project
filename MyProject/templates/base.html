@@ -8,7 +8,6 @@
         <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
         <link rel="stylesheet" href="{% static 'style.css' %}">
         <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-        {% comment %} <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script> {% endcomment %}
         <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
       </head>
     </head>
@@ -38,10 +37,10 @@
                         <a class="nav-link" href="/">Home</a>
                       </li>
                       <li class="nav-item active">
-                        <a class="nav-link" href="{% url 'myindex' %}">Beneficiari</a>
+                        <a class="nav-link" href="{% url 'orderby_beneficiario' id=1 %}">Beneficiari</a>
                       </li>
                       <li class="nav-item active">
-                        <a class="nav-link" href="{% url 'index' %}">Scadenze</a>
+                        <a class="nav-link" href="{% url 'orderby_scadenze_beneficiario' id=1 %}">Scadenze</a>
                       </li>
                     </ul>
                 {% endif %}

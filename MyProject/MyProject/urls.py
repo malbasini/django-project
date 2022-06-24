@@ -15,10 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from scadenzario.views import download_file
+from scadenzario.views import download_file,index_scadenze_order_by_beneficiario,index_scadenze_order_by_data
 from scadenzario.views import index,get_queryset,update_view,detail_view,delete_view,index_scadenze,get_queryset_scadenze
 from scadenzario.views import registrazione,homepage,creaBeneficiarioView,creaScadenzaView,detail_view_scadenza
-from scadenzario.views import update_view_scadenza,delete_view_scadenza,update_view_sql,delete_ricevuta
+from scadenzario.views import update_view_scadenza,delete_view_scadenza,update_view_sql,delete_ricevuta,index_order_by
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,5 +39,8 @@ urlpatterns = [
     path('delete/<int:pk>/ricevuta/<int:id>', delete_ricevuta, name='delete_ricevuta'),
     path('search_results_scadenza/', get_queryset_scadenze, name='search_scadenze'),
     path('download/<int:id>', download_file,name='downloadfile'),
+    path('orderby/<int:id>',index_order_by,name='orderby_beneficiario'),
+    path('orderby_scadenze/<int:id>',index_scadenze_order_by_beneficiario,name='orderby_scadenze_beneficiario'),
+     path('orderby_scadenze_datascadenza/<int:id>',index_scadenze_order_by_data,name='orderby_scadenze_data'),
     path('accounts/', include('django.contrib.auth.urls')),
 ]
