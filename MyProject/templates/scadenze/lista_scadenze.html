@@ -47,25 +47,21 @@
                 <tr>
                     {% if id is null %}
                         {% with id=1 %}
-                        <th scope="col"><a href="{% url 'orderby_scadenze_beneficiario' id=id %}"><i class="fa fa-sort-up" aria-hidden="true"></i> Beneficiario</a></th>
+                        <th scope="col"><a href="{% url 'orderby_scadenze_beneficiario' id=id %}">Beneficiario</a></th>
                         {% endwith %}
                     {% else %}
                         {% if id is 1 %}
-                                <th scope="col"><a href="{% url 'orderby_scadenze_beneficiario' id=id %}"><i class="fa fa-sort-up" aria-hidden="true"></i> Beneficiario</a></th>
+                                <th scope="col"><a href="{% url 'orderby_scadenze_beneficiario' id=id %}">Beneficiario</a></th>
                         {% else %}
-                                <th scope="col"><a href="{% url 'orderby_scadenze_beneficiario' id=id %}"><i class="fa fa-sort-down" aria-hidden="true"></i> Beneficiario</a></th>
+                                <th scope="col"><a href="{% url 'orderby_scadenze_beneficiario' id=id %}">Beneficiario</a></th>
                         {% endif %}
                     {% endif %}
                     {% if id is null %}
                         {% with id=1 %}
-                        <th scope="col"><a href="{% url 'orderby_scadenze_data' id=id %}"><i class="fa fa-sort-up" aria-hidden="true"></i> Data Scadenza</a></th>
+                        <th scope="col"><a href="{% url 'orderby_scadenze_data' id=id %}">Data Scadenza</a></th>
                         {% endwith %}
                     {% else %}
-                        {% if id is 1 %}
-                                <th scope="col"><a href="{% url 'orderby_scadenze_data' id=id %}"><i class="fa fa-sort-up" aria-hidden="true"></i> Data Scadenza</a></th>
-                        {% else %}
-                                <th scope="col"><a href="{% url 'orderby_scadenze_data' id=id %}"><i class="fa fa-sort-down" aria-hidden="true"></i> Data Scadenza</a></th>
-                        {% endif %}
+                        <th scope="col"><a href="{% url 'orderby_scadenze_data' id=id %}">Data Scadenza</a></th>
                     {% endif %}
                     <th scope="col">Importo</th>
                     <th scope="col">Sollecito</th>
