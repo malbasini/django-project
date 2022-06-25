@@ -15,6 +15,7 @@ from xmlrpc.client import DateTime
 from django.shortcuts import render
 from multiprocessing import context
 from django.http import FileResponse, Http404, HttpResponse, HttpResponseRedirect
+from django.urls import include
 from .forms import FormRegistrazioneUser,BeneficiarioModelForm, ScadenzeModelForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login
@@ -754,4 +755,4 @@ def my_select_blog_sql(id):
 def close_connection():
     for conn in connections.all():
             conn.close()
-            
+        

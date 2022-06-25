@@ -18,7 +18,7 @@ from django.urls import path,include
 from scadenzario.views import download_file,index_scadenze_order_by_beneficiario,index_scadenze_order_by_data,index_scadenze_order_by_importo
 from scadenzario.views import index,get_queryset,update_view,detail_view,delete_view,index_scadenze,get_queryset_scadenze
 from scadenzario.views import registrazione,homepage,creaBeneficiarioView,creaScadenzaView,detail_view_scadenza
-from scadenzario.views import update_view_scadenza,delete_view_scadenza,update_view_sql,delete_ricevuta,index_order_by
+from scadenzario.views import update_view_scadenza,delete_view_scadenza,update_view_sql,delete_ricevuta,index_order_by,send_email
 
 urlpatterns = [
     path('admin/', admin.site.urls),
