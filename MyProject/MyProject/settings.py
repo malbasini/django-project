@@ -15,7 +15,8 @@ from decouple import config
 
 
 
-#link alla documentazione sulla configurazione:https://github.com/henriquebastos/python-decouple
+#link alla documentazione sulla configurazione:
+# https://github.com/henriquebastos/python-decouple
 
 
 
