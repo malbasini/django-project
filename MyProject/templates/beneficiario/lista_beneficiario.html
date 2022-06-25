@@ -45,7 +45,7 @@
             <thead class="table-dark">
                 <tr>
                     {% if id is null %}
-                        {% with id=1 %}
+                        {% with id=0 %}
                         <th scope="col"><a href="{% url 'orderby_beneficiario' id=id %}">Beneficiario</a></th>
                         {% endwith %}
                     {% else %}

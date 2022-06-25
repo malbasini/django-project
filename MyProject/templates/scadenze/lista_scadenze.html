@@ -63,7 +63,13 @@
                     {% else %}
                         <th scope="col"><a href="{% url 'orderby_scadenze_data' id=id %}">Data Scadenza</a></th>
                     {% endif %}
-                    <th scope="col">Importo</th>
+                    {% if id is null %}
+                        {% with id=1 %}
+                        <th scope="col"><a href="{% url 'orderby_scadenze_importo' id=id %}">Importo</a></th>
+                        {% endwith %}
+                    {% else %}
+                        <th scope="col"><a href="{% url 'orderby_scadenze_importo' id=id %}">Importo</a></th>
+                    {% endif %}
                     <th scope="col">Sollecito</th>
                     <th scope="col">Giorni Ritardo/Mancanti(-)</th>
                     <th scope="col">Data Pagamento</th>

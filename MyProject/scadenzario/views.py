@@ -140,7 +140,7 @@ def index(request):
 def index_order_by(request,id):
     if id == 1:
         id = 0
-        object_list = ModelBeneficiario.objects.all().order_by('beneficiario').values().filter(iduser=request.user.pk)
+        object_list = ModelBeneficiario.objects.all().order_by('-beneficiario').values().filter(iduser=request.user.pk)
         page_num = request.GET.get('page', 1)
         paginator = Paginator(object_list, 3) # 6 employees per page
         try:
@@ -153,7 +153,7 @@ def index_order_by(request,id):
             page_obj = paginator.page(paginator.num_pages)
         return render(request, 'beneficiario/lista_beneficiario.html', {'page_obj': page_obj,"id":id})
     else:
-        object_list = ModelBeneficiario.objects.all().order_by('-beneficiario').values().filter(iduser=request.user.pk)
+        object_list = ModelBeneficiario.objects.all().order_by('beneficiario').values().filter(iduser=request.user.pk)
         id = 1
         page_num = request.GET.get('page', 1)
         paginator = Paginator(object_list, 3) # 6 employees per page
@@ -188,7 +188,7 @@ def index_scadenze(request):
 def index_scadenze_order_by_beneficiario(request,id):
     if id == 1:
         id = 0
-        object_list = ModelScadenze.objects.all().order_by('beneficiario').values().filter(iduser=request.user.pk)
+        object_list = ModelScadenze.objects.all().order_by('-beneficiario').values().filter(iduser=request.user.pk)
         page_num = request.GET.get('page', 1)
         paginator = Paginator(object_list, 3) # 6 employees per page
         try:
@@ -201,7 +201,7 @@ def index_scadenze_order_by_beneficiario(request,id):
             page_obj = paginator.page(paginator.num_pages)
         return render(request, 'scadenze/lista_scadenze.html', {'page_obj': page_obj,"id":id})
     else:
-        object_list = ModelScadenze.objects.all().order_by('-beneficiario').values().filter(iduser=request.user.pk)
+        object_list = ModelScadenze.objects.all().order_by('beneficiario').values().filter(iduser=request.user.pk)
         id = 1
         page_num = request.GET.get('page', 1)
         paginator = Paginator(object_list, 3) # 6 employees per page
@@ -214,11 +214,13 @@ def index_scadenze_order_by_beneficiario(request,id):
             # if the page is out of range, deliver the last page
             page_obj = paginator.page(paginator.num_pages)
         return render(request, 'scadenze/lista_scadenze.html', {'page_obj': page_obj,"id":id})
+    
+    
 #ORDER BY SCADENZE PER DATA SCADENZA CON PAGINAZIONE
 def index_scadenze_order_by_data(request,id):
     if id == 1:
         id = 0
-        object_list = ModelScadenze.objects.all().order_by('datascadenza').values().filter(iduser=request.user.pk)
+        object_list = ModelScadenze.objects.all().order_by('-datascadenza').values().filter(iduser=request.user.pk)
         page_num = request.GET.get('page', 1)
         paginator = Paginator(object_list, 3) # 6 employees per page
         try:
@@ -231,7 +233,39 @@ def index_scadenze_order_by_data(request,id):
             page_obj = paginator.page(paginator.num_pages)
         return render(request, 'scadenze/lista_scadenze.html', {'page_obj': page_obj,"id":id})
     else:
-        object_list = ModelScadenze.objects.all().order_by('-datascadenza').values().filter(iduser=request.user.pk)
+        object_list = ModelScadenze.objects.all().order_by('datascadenza').values().filter(iduser=request.user.pk)
+        id = 1
+        page_num = request.GET.get('page', 1)
+        paginator = Paginator(object_list, 3) # 6 employees per page
+        try:
+            page_obj = paginator.page(page_num)
+        except PageNotAnInteger:
+            # if page is not an integer, deliver the first page
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            # if the page is out of range, deliver the last page
+            page_obj = paginator.page(paginator.num_pages)
+        return render(request, 'scadenze/lista_scadenze.html', {'page_obj': page_obj,"id":id})
+    
+    
+#ORDER BY SCADENZE PER IMPORTO CON PAGINAZIONE
+def index_scadenze_order_by_importo(request,id):
+    if id == 1:
+        id = 0
+        object_list = ModelScadenze.objects.all().order_by('-importo').values().filter(iduser=request.user.pk)
+        page_num = request.GET.get('page', 1)
+        paginator = Paginator(object_list, 3) # 6 employees per page
+        try:
+            page_obj = paginator.page(page_num)
+        except PageNotAnInteger:
+            # if page is not an integer, deliver the first page
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            # if the page is out of range, deliver the last page
+            page_obj = paginator.page(paginator.num_pages)
+        return render(request, 'scadenze/lista_scadenze.html', {'page_obj': page_obj,"id":id})
+    else:
+        object_list = ModelScadenze.objects.all().order_by('importo').values().filter(iduser=request.user.pk)
         id = 1
         page_num = request.GET.get('page', 1)
         paginator = Paginator(object_list, 3) # 6 employees per page
