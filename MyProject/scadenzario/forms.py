@@ -2,12 +2,13 @@ from cProfile import label
 from calendar import calendar
 from datetime import timezone
 from typing_extensions import Required
+from wsgiref.validate import validator
 from django import forms
 from django.contrib.auth.models import User
 from pkg_resources import require
 from .models import ModelBeneficiario,ModelScadenze
 from phonenumber_field.formfields import PhoneNumberField
-
+from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
 
 class FormRegistrazioneUser(forms.ModelForm):
 
@@ -33,7 +34,7 @@ class FormRegistrazioneUser(forms.ModelForm):
 class BeneficiarioModelForm(forms.ModelForm):
     id = forms.IntegerField(widget=forms.HiddenInput(),required=False)
     beneficiario = forms.CharField(widget=forms.TextInput(),required=True)
-    descrizione = forms.CharField(widget=forms.Textarea(),required=True)
+    descrizione = forms.CharField(widget=SummernoteWidget(),required=True)  # instead of forms.Textarea
     email = forms.CharField(widget=forms.EmailInput(),required=False)
     telefono = PhoneNumberField(widget=forms.TextInput(),required=False)
     sitoweb = forms.CharField(widget=forms.URLInput(),required=False)
@@ -42,6 +43,9 @@ class BeneficiarioModelForm(forms.ModelForm):
     class Meta:
         model = ModelBeneficiario
         fields = ["beneficiario", "descrizione", "email", "telefono","sitoweb","iduser"]
+        widgets = {
+            'descrizione': SummernoteWidget(),
+        }
         
 
 class ScadenzeModelForm(forms.ModelForm):

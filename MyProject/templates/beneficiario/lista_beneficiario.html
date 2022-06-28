@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_field %}
+{% load widget_tweaks %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,7 +68,7 @@
                        {{ beneficiario.beneficiario }}
                     </td>
                     <td>
-                       {{ beneficiario.descrizione }}
+                       {{ beneficiario.descrizione|safe }}
                      </td>
                     <td>
                        {{ beneficiario.email }}

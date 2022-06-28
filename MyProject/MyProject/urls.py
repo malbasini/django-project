@@ -44,4 +44,5 @@ urlpatterns = [
     path('orderby_scadenze_datascadenza/<int:id>',index_scadenze_order_by_data,name='orderby_scadenze_data'),
     path('orderby_scadenze_importoscadenza/<int:id>',index_scadenze_order_by_importo,name='orderby_scadenze_importo'),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('summernote/', include('django_summernote.urls')),
 ]
