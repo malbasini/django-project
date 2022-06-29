@@ -100,7 +100,7 @@
                         </div>
                         <div class='row'>
                             <div class='col-md-6'>
-                              {{ form.giorniritardo|as_crispy_field}}
+                              {% if giorni >= 0 %}{{ form.giorniritardo|add_class:'myclass'|as_crispy_field }} {% else %} {{ form.giorniritardo|as_crispy_field }} {% endif %}
                             </div>
                             <div class='col-md-6'>
                               {{ form.datapagamento|as_crispy_field}}
