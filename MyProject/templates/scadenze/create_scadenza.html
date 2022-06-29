@@ -52,10 +52,11 @@
                     {{ form.datapagamento|as_crispy_field}}
                   </div>
               </div>
-              <br>
-              <script src='https://www.google.com/recaptcha/api.js'></script>
-              <div class="g-recaptcha" data-sitekey="6LeWY6sgAAAAAHOZHxDf5PhoP1COmXlKgjrLqdJn">
-
+              <div class='col-md-3 myclass'>
+                {{ form.captcha|as_crispy_field }}
+              </div>
+              <div class='col-md-9'
+                
               </div>
               <br>
               <div class="col-md-6">

@@ -386,10 +386,12 @@ def update_view(request, pk):
         data = ModelBeneficiario.objects.get(id = pk)
         if request.method == 'POST':
             form = BeneficiarioModelForm(request.POST)
-            form.iduser= int(request.POST.get('iduser'))
+            form.iduser= request.POST.get('iduser')
             if form.is_valid():
                 my_update_beneficiario_sql(form,form.iduser,pk)
                 return HttpResponseRedirect('/')
+            else:
+                print(form.errors.as_data()) #
         else:
             form = BeneficiarioModelForm(request.GET or None, instance = data)
     except Exception as e:
@@ -458,9 +460,7 @@ def update_view_sql(request,pk):
             form = ScadenzeModelForm(request.POST or None)
             files = request.FILES.getlist('files',None)
             if form.is_valid():
-                print('FORM VALIDO')
                 count = len(request.FILES.getlist('files'))
-                print('COUNT:',count)
                 beneficiario=form.cleaned_data['beneficiario']
                 if count > 0:
                     for f in files:
@@ -487,6 +487,7 @@ def update_view_sql(request,pk):
                     my_update_scadenza_sql(form,pk,query[0])
                     return HttpResponseRedirect('/')  
             else:
+                print(form.errors.as_data()) # here you print errors to terminal
                 form = ScadenzeModelForm()
                 giorni= initialize_form_for_update(form,pk)
                 form.fields['beneficiario'].queryset = ModelBeneficiario.objects.filter(iduser=request.user.pk)
