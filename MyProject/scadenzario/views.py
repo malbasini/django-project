@@ -444,7 +444,6 @@ def update_view_sql(request,pk):
     context={}
     try:
         if request.method == "GET":
-            print('DENTRO GET')
             form = ScadenzeModelForm()
             giorni= initialize_form_for_update(form,pk)
             form.fields['beneficiario'].queryset = ModelBeneficiario.objects.filter(iduser=request.user.pk)
@@ -487,7 +486,14 @@ def update_view_sql(request,pk):
                     query = my_custom_sql(form.cleaned_data['beneficiario'])
                     my_update_scadenza_sql(form,pk,query[0])
                     return HttpResponseRedirect('/')  
-            return HttpResponseRedirect('/')  
+            else:
+                form = ScadenzeModelForm()
+                giorni= initialize_form_for_update(form,pk)
+                form.fields['beneficiario'].queryset = ModelBeneficiario.objects.filter(iduser=request.user.pk)
+                data = my_select_ricevute_sql(pk)
+                count = my_select_count_sql(pk)
+                context = {'form':form,'pk':pk,"data":data,"count":count,"giorni":giorni}
+                return render(request, "update_view_scadenza.html", context)
     except Exception as a:
         print('Errore metodo POST in update_view_sql:' + str(a))           
 

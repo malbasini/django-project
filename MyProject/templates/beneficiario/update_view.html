@@ -55,6 +55,12 @@
                     {{ form.sitoweb|as_crispy_field}}
                   </div>
                 </div>
+                <br>
+                <script src='https://www.google.com/recaptcha/api.js'></script>
+                <div class="g-recaptcha" data-sitekey="6LeWY6sgAAAAAHOZHxDf5PhoP1COmXlKgjrLqdJn">
+
+                </div>
+                <br>
                 <input type='hidden' value={{ request.user.pk }} id='iduser' name='iduser'>  
           </div>
     </form>

@@ -106,6 +106,7 @@
                               {{ form.datapagamento|as_crispy_field}}
                             </div>
                         </div>
+                        <br>
                         <div class="row">
                             <div class='col-md-9'>
                             <fieldset name="Multiple Files Upload">
@@ -118,6 +119,12 @@
                             <div class='col-md-3'>
                             </div>
                         </div>
+                        <br>
+                        <script src='https://www.google.com/recaptcha/api.js'></script>
+                        <div class="g-recaptcha" data-sitekey="6LeWY6sgAAAAAHOZHxDf5PhoP1COmXlKgjrLqdJn">
+
+                        </div>
+                        <br>
                 </form>
             </div>
            <form method="post" action="{% url 'delete_view_scadenza' pk=pk %}">

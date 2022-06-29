@@ -9,6 +9,9 @@ from pkg_resources import require
 from .models import ModelBeneficiario,ModelScadenze
 from phonenumber_field.formfields import PhoneNumberField
 from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
+from captcha.fields import ReCaptchaField
+from captcha.widgets import ReCaptchaV2Checkbox
+
 
 class FormRegistrazioneUser(forms.ModelForm):
 
@@ -39,10 +42,11 @@ class BeneficiarioModelForm(forms.ModelForm):
     telefono = PhoneNumberField(widget=forms.TextInput(),required=False)
     sitoweb = forms.CharField(widget=forms.URLInput(),required=False)
     iduser = forms.IntegerField(widget=forms.HiddenInput(),required=False)
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(api_params={'hl': 'cl', 'onload': 'onLoadFunc'}),required=True)
     
     class Meta:
         model = ModelBeneficiario
-        fields = ["beneficiario", "descrizione", "email", "telefono","sitoweb","iduser"]
+        fields = ["beneficiario", "descrizione", "email", "telefono","sitoweb","iduser",'captcha']
         widgets = {
             'descrizione': SummernoteWidget(),
         }
@@ -59,7 +63,8 @@ class ScadenzeModelForm(forms.ModelForm):
     iduser = forms.IntegerField(widget=forms.HiddenInput(),required=False)
     count = forms.IntegerField(widget=forms.HiddenInput(),required=False)
     idbeneficiario_id = forms.IntegerField(widget=forms.HiddenInput(),required=False)
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(api_params={'hl': 'cl', 'onload': 'onLoadFunc'}),required=True)
     class Meta:
         model = ModelScadenze
-        fields = ["id","beneficiario","datascadenza", "importo", "sollecito","giorniritardo", "datapagamento", "iduser","count","idbeneficiario_id"]
+        fields = ["id","beneficiario","datascadenza", "importo", "sollecito","giorniritardo", "datapagamento", "iduser","count","idbeneficiario_id","captcha"]
  

@@ -34,7 +34,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG',cast=bool)
 
-ALLOWED_HOSTS = ['www.mysite.com','mysite.com','127.0.0.1']
+ALLOWED_HOSTS = ['localhost','127.0.0.1']
 
 
 # Application definition
@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     "crispy_forms",
     'crispy_bootstrap5',
     'widget_tweaks',
-    'django_summernote'
+    'django_summernote',
+    'captcha',
 ]
 
 
@@ -178,6 +179,11 @@ MEDIA_ROOT = [BASE_DIR, 'media/']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+#recaptcha
+
+RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY')
 
 LOGIN_REDIRECT_URL = '/'
 
