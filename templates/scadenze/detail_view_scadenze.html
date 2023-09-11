@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<br>
+<br>
+<div class="alert alert-success">
+    <h2 style="text-align:center;">
+        <div style="font-variant: small-caps;"><b>DETTAGLIO SCADENZA</b></div>
+  </h2>
+</div>
+<br>
+<section>
+    <div class="row">
+        <div class="col-md-6">
+            <a href="{% url 'update_scadenza' pk=pk %}" class="btn btn-outline-primary btn-md"><i class="fas fa-pencil-alt"></i>Modifica</a>
+            <a href="{% url 'index' %}" class="btn btn-outline-primary btn-md"><i class="fas fa-th-list"></i> Torna alla Lista</a>
+        </div>
+        <div class="col-md-6">
+            
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="row">
+        <div class="col-md-7">
+                <div class="form-control contenuto mt5">
+                    <label class="label">Beneficiario:</label>&nbsp;
+                    <b>{{data.1}}</b>
+                </div>
+
+                <div class="form-control contenuto mt5">
+                    <label class="label" >Data Scadenza:</label>&nbsp;
+                    <b>{{data.2|date:'SHORT_DATE_FORMAT'}}</b>
+                </div>
+                <div class="form-control contenuto mt5">
+                    <label class="label">Importo:</label>&nbsp;
+                    <b>{{data.3}}&nbsp;Euro</b>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <aside>
+                    <div class="form-control contenuto mt5">
+                        <label class="label">Sollecito</label>:&nbsp;
+                         <b>{{data.4}}</b>
+                    </div>
+                    <div class="form-control contenuto mt5">
+                        <label class="label">Giorni Ritardo/Mancanti(-):</label>&nbsp;
+                        <b>{% if data.5 >= 0 %}<span class="myclass">{{ data.5 }}</span> {% else %} {{ data.5 }} {% endif %}</b>
+                    </div>
+                    <div class="form-control contenuto mt5">
+                        <label class="label">Data Pagamento:</label>&nbsp;
+                        <b>{{data.6|date:'SHORT_DATE_FORMAT'}}</b>
+                    </div>
+                </aside>
+            </div>
+    </div>
+</section>
+    {% if count.0 > 0 %}
+              <br>
+                <div class="container">
+                      <div class="alert alert-success">
+                        <h2 style="text-align:center;">
+                            <b>
+                            <div style="font-variant: small-caps;">LISTA RICEVUTE
+                            </b>
+                            </div>
+                      </h2>
+                </div>
+              </div>
+              <br>
+              <div class="container">
+                <div class="table-responsive-md">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">File Name</th>
+                                <th scope="col">File Type</th>
+                                <th scope="col">Beneficiario</th>
+                                <th scope="col">ID Scadenza</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in ricevute %}
+                            <tr>
+                                <td>
+                                  {{ item.1 }}
+                                </td>
+                                <td>
+                                  {{ item.2 }}
+                                </td>
+                                <td>
+                                  {{ item.3 }}
+                                </td>
+                                <td colspan="2">
+                                  {{ item.4 }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+               {% else %}
+
+               {% endif %}
+{% endblock content %}
