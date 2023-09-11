@@ -1,0 +1,41 @@
+.contenuto {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    color: #000000;
+    background-color: #FFFFFF;
+    }
+.label{
+    color: red;
+}
+.btn-space { margin-right: 15px; } 
+
+.myclass{
+    color:red;
+}
+.jumbotron {
+    background-image: url('images/Home.jpg');
+    background-repeat: repeat-y;
+    background-size:100%;
+    height:400px;
+}
+ 
+.jumbotron h1 {
+    font-size: 3.5rem;
+    color: black;
+}
+
+.jumbotron p {
+    font-size: 2.0rem;
+    color:red;
+    margin-bottom: 60px;
+}
+footer {
+    margin-top: 3em;
+    padding-top: 1em;
+    border-top: 1px solid #ccc;
+    padding-bottom: 2em;
+    text-align: center;
+    color: white;
+    background-color: #3a5a40;
+}
+

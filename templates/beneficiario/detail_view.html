@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<br>
+<br>
+<div class="alert alert-success">
+    <h2 style="text-align:center;">
+        <b>
+        <div style="font-variant: small-caps;"> DETTAGLIO BENEFICIARIO
+        </b>
+        </div> 
+  </h2>
+</div>
+<br>
+<section>
+    <div class="row">
+        <div class="col-md-6">
+            <a href="{% url 'aggiorna' pk=pk %}" class="btn btn-outline-primary btn-md"><i class="fas fa-pencil-alt"></i>Modifica</a>
+            <a href="{% url 'myindex' %}" class="btn btn-outline-primary btn-md"><i class="fas fa-th-list"></i> Torna alla Lista</a>
+        </div>
+        <div class="col-md-6">
+            
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="row">
+        <div class="col-md-7">
+                <div class="form-control contenuto">
+                    <label class="label">Beneficiario:</label>&nbsp;
+                    <b>{{data.beneficiario}}</b>
+                </div>
+
+                <div class="form-control contenuto">
+                    <label class="label" >Descrizione:</label>&nbsp;
+                    <b>{{data.descrizione|safe}}</b>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <aside>
+                    <div class="form-control contenuto">
+                        <label class="label">Email:</label>&nbsp;
+                        <b>{{data.email}}</b>
+                    </div>
+                    <div class="form-control contenuto">
+                        <label class="label">Telefono</label>:&nbsp;
+                         <b>{{data.telefono}}</b>
+                    </div>
+                    <div class="form-control contenuto">
+                        <label class="label">SitoWeb:</label>&nbsp;
+                         <b><a href="{{data.sitoweb}}">{{data.sitoweb}}</a></b>
+                    </div>
+                </aside>
+            </div>
+    </div>
+</section>
+{% endblock content %}

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_field %}
+{% load widget_tweaks %}
+{% block content %}
+<br>
+<br>
+    <div class="container">
+      <div class="row justify-content-center">
+          <div class="alert alert-success">
+            <h2 style="text-align:center;">
+                <b>
+                <div style="font-variant: small-caps;">AGGIORNA BENEFICIARIO
+                </b>
+                </div> 
+          </h2>
+        </div>
+    </div>
+  </div>  
+<br>
+<section>
+    <form method="post" action="{% url 'aggiorna' pk=id  %}">
+        <br>
+        {% csrf_token %}
+        {{ error }}
+          <div class="row">
+              <div class="col-md-10">
+              </div>
+              <div class="col-md-2 d-flex align-items-right">
+                <br>
+                <button type="submit" class="btn btn-primary btn-lg btn-block btn-space">Salva</button>
+                <button class="btn btn-danger btn-lg ml-3" type="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fas fa-trash-alt"></i></button>
+              </div>
+          </div>
+          <br
+          <div class='container'>
+                <div class='row'>
+                  <div class='col-md-12 myclass'>
+                    {{ form.descrizione|as_crispy_field}}
+                  </div>
+                </div>
+                <div class='row'>
+                  <div class='col-md-6 myclass'>
+                    {{ form.beneficiario|attr:"readonly:readonly"|as_crispy_field }}
+                  </div>
+                  <div class='col-md-6'>
+                    {{ form.email|as_crispy_field}}
+                  </div>
+                </div>
+                <div class='row'>
+                  <div class='col-md-6'>
+                    {{ form.telefono|as_crispy_field}}
+                  </div>
+                  <div class='col-md-6'>
+                    {{ form.sitoweb|as_crispy_field}}
+                  </div>
+                </div>
+                <div class='col-md-9'>
+                  
+                </div>
+                <br>
+                <input type='hidden' value={{ request.user.pk }} id='iduser' name='iduser'>  
+          </div>
+    </form>
+    <form method="post" action="{% url 'delete_view' pk=id %}">
+    {% csrf_token %}
+    {{ error }}
+        <!-- The Modal -->
+    <div class="modal" id="myModal">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+            <h4 class="modal-title">Conferma Eliminazione</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <p>Stai per eliminare il beneficiario, tutte le scadenze associate e le relative ricevute. 
+                  Non potrai recuperare i dati. Confermi l'eliminazione?</p>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-danger">Conferma</button>
+            </div>
+        </div>
+      </div>
+    </div>
+</form>
+{% endblock content %}
+</section>
+   
+    

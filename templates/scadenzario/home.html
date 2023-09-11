@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HomePage</title>
+  </head>
+  <body>
+    {% block content %}
+    <div class="container mt-3">
+      <div class="jumbotron mt-4 p-20 rounded">
+        <h1>HOME PAGE</h1> 
+        <div class="row">
+            <div class="col-md-4">
+                <p>
+                </p> 
+            </div>
+            <div class="col-md-8">
+            </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+            <h2>Gestione Scadenze</h2>
+            <p><b>Dal menù Lista Scadenze è possibile creare tutte le scadenze. Ovviamente prima
+                vanno creati i beneficiari delle nostre scadenze.
+            </b></p>
+            <p><a data-toggle="tooltip" title="Gestione Scadenze" class="btn btn-primary" href="{% url 'index' %}">Gestione Scadenze</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Gestione Beneficiario</h2>
+            <p><b>Dal menù Lista Beneficiari è possibile creare tutti i beneficiari delle nostre scadenze.
+              <font style="color:red;">ATTENZIONE!</font> La cancellazione di un Beneficiario comporta a cascata l'eliminazione di tutte
+              le scadenze associate e relative ricevute.
+            </b></p>
+            <p><a data-toggle="tooltip" title="Gestione Beneficiario" class="btn btn-primary" href="{% url 'myindex' %}" >Gestione Beneficiario</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Gestione Utenti</h2>
+            <p><b>Django Framework mette a disposizione un efficiente gestione del profilo utente, è possibile 
+                gestire utenti registrati localmente, login, logout, registrazione e cambio
+                password.</b></p>
+            <p><a data-toggle="tooltip" title="Login" class="btn btn-primary"  href="{% url 'login' %}" >Login Utente</a></p>
+        </div>
+    </div> 
+    </div>
+    {% endblock content %}
+  </body>
+</html>

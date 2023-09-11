@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <title>Crea Scadenza</title>
+  </head>
+  <body>
+    {% block content %}
+    <br>
+    <div class="container">
+      <div class="row justify-content-center">
+          <div class="alert alert-success">
+            <h2 style="text-align:center;">
+                <b>
+                <div style="font-variant: small-caps;">INSERISCI UNA NUOVA SCADENZA
+                </b>
+                </div> 
+          </h2>
+        </div>
+    </div>
+  </div>   
+    <br>
+    <br>
+      <form action="{% url 'scadenza_view' %}" method="POST" novalidate>
+        {% csrf_token %}
+        {{ error }}
+        <div class='container'>
+            <div class='row'>
+                <div class='col-md-6 myclass'>
+                  {{ form.beneficiario|as_crispy_field}}
+                </div>
+                <div class='col-md-6 myclass'>
+                  {{ form.datascadenza|as_crispy_field}}
+                </div>
+              </div>
+              <div class='row'>
+                <div class='col-md-6 myclass'>
+                  {{ form.importo|as_crispy_field}}
+                </div>
+                <div class='col-md-6'>
+                  {{ form.sollecito|as_crispy_field}}
+                </div>
+              </div>
+              <div class='row'>
+                  <div class='col-md-6'>
+                    {{ form.giorniritardo|as_crispy_field}}
+                  </div>
+                  <div class='col-md-6'>
+                    {{ form.datapagamento|as_crispy_field}}
+                  </div>
+              </div>
+              <div class='col-md-9'>
+                
+              </div>
+              <br>
+              <div class="col-md-6">
+                    <input type="submit" class = "btn btn-danger" value="Invia!">
+              </div>
+              <div class="col-md-6">
+                    <input type="hidden" value={{ request.user.pk }} name="iduser"/>
+              </div>
+        </div>
+      </form>
+    {% endblock content %}
+  </body>
+</html>

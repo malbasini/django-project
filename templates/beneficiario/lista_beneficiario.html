@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_field %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% block content %}
+    <br>
+    <div class="container">
+        <div class="alert alert-success">
+            <h2 style="text-align:center;">
+                <b>
+                <div style="font-variant: small-caps;">LISTA BENEFICIARI
+                </b>
+                </div> 
+          </h2>
+        </div>
+    </div>
+    <br>
+    <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <a class="btn btn-outline-primary btn-md" href="{% url 'beneficiario' %}"><i class="fa fa-plus-circle" aria-hidden="true"></i>Nuovo Beneficiario</a>
+                </div>
+                <div class="col-md-9 d-flex flex-row-reverse">
+                    <form action="{% url 'search' %}"  method="GET">
+                        <div class="input-group">
+                            <b class='myclass'>Beneficiario:&nbsp;&nbsp;&nbsp; </b><input type="text" name="q" placeholder="Cerca ...." value="{{query}}">
+                            <div class="input-group-append">
+                               <button class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></button>
+                            </div> 
+                        </div>
+                    </form>
+                </div>
+            </div>
+    </div>
+    <br>
+    <div class="container">
+    <div class="table-responsive-md">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    {% if id is null %}
+                        {% with id=0 %}
+                        <th scope="col"><a href="{% url 'orderby_beneficiario' id=id %}">Beneficiario</a></th>
+                        {% endwith %}
+                    {% else %}
+                        <th scope="col"><a href="{% url 'orderby_beneficiario' id=id %}">Beneficiario</a></th>
+                    {% endif %}
+                    <th scope="col">Descrizione</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Telefono</th>
+                    <th scope="col">Sito Web</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for beneficiario in page_obj %}  
+                <tr>
+                    <td>
+                       {{ beneficiario.beneficiario }}
+                    </td>
+                    <td>
+                       {{ beneficiario.descrizione|safe }}
+                     </td>
+                    <td>
+                       {{ beneficiario.email }}
+                    </td>
+                    <td>
+                       {{ beneficiario.telefono }}
+                    </td>
+                    <td>
+                       <a href={{ beneficiario.sitoweb }}>{{ beneficiario.sitoweb }}</a>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <input type="hidden" id="idbeneficiario" value={{ beneficiario.id }} name="idbeneficiario"/>
+                            <a href="{% url 'detail_view' pk=beneficiario.id %}" class="btn btn-outline-primary">Dettaglio</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}                 
+            </tbody>
+        </table>
+    </div>
+    {% include "pagination.html" %}
+    {% endblock content %}
+   </div>
+</body>
+</html>

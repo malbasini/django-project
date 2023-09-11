@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_field %}
+{% load widget_tweaks %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <title>Crea Beneficiario</title>
+  </head>
+  <body>
+    {% block content %}
+    <br>
+    <div class="container">
+      <div class="row justify-content-center">
+          <div class="alert alert-success">
+            <h2 style="text-align:center;">
+                <b>
+                <div style="font-variant: small-caps;">INSERISCI UN NUOVO BENEFICIARIO
+                </b>
+                </div> 
+          </h2>
+        </div>
+    </div>
+  </div> 
+  <br
+  {% if response %} {% autoescape off %} {% endautoescape %} 
+  <br>
+  <div class="container">
+    <div class="row justify-content-center">
+        <div class="alert alert-secondary alert-dismissible">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          <h2 style="text-align:center;">
+              <div>{{response}}</div> 
+        </h2>
+      </div>
+  </div>
+</div>  
+{% endif %}
+    <br>
+    <br>
+      <form action="{% url 'beneficiario' %}" method="POST" novalidate>
+        {% csrf_token %}
+        {{ error }}
+        <div class='container'>
+            <div class='row'>
+              <div class='col-md-12 myclass'>
+                {{ form.descrizione|as_crispy_field}}
+              </div>
+            </div>
+            <div class='row'>
+              <div class='col-md-6 myclass'>
+                {{ form.beneficiario|as_crispy_field}}
+              </div>
+              <div class='col-md-6'>
+                {{ form.email|as_crispy_field}}
+              </div>
+            </div>
+            <div class='row'>
+              <div class='col-md-6'>
+                {{ form.telefono|as_crispy_field}}
+              </div>
+              <div class='col-md-6'>
+                {{ form.sitoweb|as_crispy_field}}
+              </div>
+            </div>
+            <br>
+            {{ form.captcha}}
+            <br>
+            <div class="row">
+                <div class="col-md-6">
+                    <input type="submit" class = "btn btn-primary" value="Invia!">
+                </div>
+                <div class="col-md-6">
+                   <input type='hidden' value={{ request.user.pk }} id='iduser' name='iduser'>  
+              </div>
+            </div>
+          </div>
+      </form>
+    {% endblock content %}
+  </body>
+</html>

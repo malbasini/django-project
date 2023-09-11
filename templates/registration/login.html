@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<br>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="alert alert-success">
+          <h2 style="text-align:center;">
+              <div style="font-variant: small-caps;"><b>PAGINA DI LOGIN</b></div>
+        </h2>
+      </div>
+  </div>
+</div>  
+<br>
+    {% if form.errors %}
+        <p>Invalid UserName or Password!</p>
+    {% endif %}
+<div class="container">
+    <br>
+    <br>
+    <!-- url: https://docs.djangoproject.com/en/dev/ref/templates/builtins/#url -->
+    <form method="post" novalidate action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+              {{ form|crispy }}
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <input type="submit" value="login" class="btn btn-primary" />
+                <input type="hidden" name="next" value="{{ next }}" />
+            </div>
+        </div>
+    </form>
+    <br>
+    <br>
+    {# Assumes you setup the password_reset view in your URLconf #}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <p><a href="{% url 'password_reset' %}">Password dimenticata?</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

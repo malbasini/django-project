@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_field %}
+{% load widget_tweaks %}
+<!doctype html>
+<html lang="it">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <title>Update Scadenza</title>
+    {% block content %}
+    <script>
+        $(document).ready(function () {
+            $("#upload").click(function (e) {
+                var data = new FormData();
+                var files = $("#multiFiles").get(0).files;
+                if (files.length == 0)
+                    return;
+                for (var i = 0; i < files.length; i++)
+                {
+                    data.append(files[i].name, files[i]);
+                }
+                csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
+                data.append("csrfmiddlewaretoken", csrf_token);
+                $.ajax({
+                    url: '{% url 'upload_files' pk=pk %}',
+                    type: "POST",
+                    data: data,
+                    contentType: false,
+                    dataType: false,
+                    processData: false,
+                    success: function (result)
+                    {
+                        console.log('success')
+                    }
+            });
+        });
+    });
+  </script>
+  </head>
+  <body>
+    <br>
+    <div class="container">
+      <div class="row justify-content-center">
+          <div class="alert alert-success">
+            <h2 style="text-align:center;">
+                <b>
+                <div style="font-variant: small-caps;">UPDATE SCADENZA
+                </b>
+                </div> 
+          </h2>
+        </div>
+    </div>
+  </div>  
+  {% if response %} {% autoescape off %} {% endautoescape %} 
+  <br>
+  <br>
+  <div class="container">
+    <div class="row justify-content-center">
+        <div class="alert alert-secondary alert-dismissible">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          <h2 style="text-align:center;">
+              <div>{{response}}</div> 
+        </h2>
+      </div>
+  </div>
+</div>  
+{% endif %}
+<section>
+  <br>
+            <div class="container">
+                    <form method="post" action="{% url 'upload_files' pk=pk  %}" novalidate enctype="multipart/form-data" >
+                    {% csrf_token %}
+                      <div class="row">
+                          <div class="col-md-10">
+                          </div>
+                          <div class="col-md-2 d-flex align-items-right">
+                            <br>
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">Salva</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <button class="btn btn-danger btn-lg ml-3" type="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fas fa-trash-alt"></i></button>
+                          </div>
+                      </div>
+                      <br>
+                    <div class='container'>
+                      <div class='row'>
+                          <div class='col-md-6 myclass'>
+                            {{ form.beneficiario|as_crispy_field}}
+                          </div>
+                          <div class='col-md-6 myclass'>
+                            {{ form.datascadenza|as_crispy_field}}
+                          </div>
+                        </div>
+                        <div class='row'>
+                          <div class='col-md-6 myclass'>
+                            {{ form.importo|as_crispy_field}}
+                          </div>
+                          <div class='col-md-6'>
+                            {{ form.sollecito|as_crispy_field}}
+                          </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-md-6'>
+                              {% if giorni >= 0 %}{{ form.giorniritardo|add_class:'myclass'|as_crispy_field }} {% else %} {{ form.giorniritardo|as_crispy_field }} {% endif %}
+                            </div>
+                            <div class='col-md-6'>
+                              {{ form.datapagamento|as_crispy_field}}
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class='col-md-9'>
+                            <fieldset name="Multiple Files Upload">
+                                    <p>
+                                      <input type="file" id="multiFiles" name="files" multiple="multiple" class="btn btn-success" />
+                                      <button id="upload" class="btn btn-warning"><i class="fas fa-cog"></i>Upload</button>
+                                    </p>
+                              </fieldset>
+                            </div>
+                            <div class='col-md-3'>
+                            </div>
+                        </div>
+                        <div class='col-md-9'
+                          
+                        </div>
+                        <br>
+                </form>
+            </div>
+           <form method="post" action="{% url 'delete_view_scadenza' pk=pk %}">
+                {% csrf_token %}
+                {{ error }}
+                    <!-- The Modal -->
+                <div class="modal" id="myModal">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                        <h4 class="modal-title">Conferma Eliminazione</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <p>Stai per eliminare la scadenza e le relative ricevute. 
+                            Non potrai recuperare i dati. Confermi l'eliminazione?</p>
+                        </div>
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-info" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-danger">Conferma</button>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </form>
+              {% if count.0 > 0 %}
+              <br>
+                <div class="container">
+                      <div class="alert alert-success">
+                        <h2 style="text-align:center;">
+                            <b>
+                            <div style="font-variant: small-caps;">LISTA RICEVUTE
+                            </b>
+                            </div> 
+                      </h2>
+                </div>
+              </div> 
+              <br>
+              <div class="container">
+                <div class="table-responsive-md">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">File Name</th>
+                                <th scope="col">File Type</th>
+                                <th scope="col">Beneficiario</th>
+                                <th scope="col">ID Scadenza</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in data %}  
+                            <tr>
+                                <td>
+                                  {{ item.1 }}
+                                </td>
+                                <td>
+                                  {{ item.2 }}
+                                </td>
+                                <td>
+                                  {{ item.3 }}
+                                </td>
+                                <td>
+                                  {{ item.4 }}
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                      <div class="dropdown">
+                                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                          Action
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                          <li><a class="dropdown-item" href="{% url 'downloadfile' id=item.0 %}">Downlod File</a></li>
+                                          <li><button type="button" data-bs-toggle="modal" data-bs-target="#myModal1" class="dropdown-item" value='Delete File'>Delete file</button></li>
+                                        </ul>
+                                      </div>
+                                    </div>
+                                    </div>
+                                    <form method="post" action="{% url 'delete_ricevuta' pk=item.0 id=item.4 %}">
+                                      {% csrf_token %}
+                                          <!-- The Modal -->
+                                      <div class="modal" id="myModal1">
+                                      <div class="modal-dialog modal-dialog-centered">
+                                          <div class="modal-content">
+                                              <!-- Modal Header -->
+                                              <div class="modal-header">
+                                              <h4 class="modal-title">Conferma Eliminazione</h4>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                              </div>
+                                              <!-- Modal body -->
+                                              <div class="modal-body">
+                                                  <p>Stai per eliminare la ricevuta. 
+                                                  Non potrai recuperare i dati. Confermi l'eliminazione?</p>
+                                              </div>
+                                              <!-- Modal footer -->
+                                              <div class="modal-footer">
+                                                  <button type="button" class="btn btn-info" data-bs-dismiss="modal">Close</button>
+                                                  <button type="submit" class="btn btn-danger">Conferma</button>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      </div>
+                                  </form>
+                                </td>
+                            </tr>
+                            {% endfor %}                 
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                    
+                {% endif %}
+            {% endblock content %}
+        </section>
+ </body>
+</html>

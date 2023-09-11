@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% block content %}
+    <br>
+    <div class="container">
+        <div class="alert alert-success">
+            <h2 style="text-align:center;">
+                <b>
+                <div style="font-variant: small-caps;"> LISTA SCADENZE
+                </b>
+                </div> 
+          </h2>
+        </div>
+    </div>
+    <br>
+    <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <a class="btn btn-outline-primary btn-md" href="{% url 'scadenza_view' %}"><i class="fa fa-plus-circle" aria-hidden="true"></i>Nuova Scadenza</a>
+                </div>
+                <div class="col-md-9 d-flex flex-row-reverse">
+                    <form action="{% url 'search_scadenze' %}"  method="GET">
+                        <div class="input-group">
+                            <b class='myclass'>Beneficiario/Data Scadenza(dd/mm/yyyy):&nbsp;&nbsp;&nbsp; </b><input type="text" name="q" placeholder="Cerca ...." value="{{query}}">
+                            <div class="input-group-append">
+                               <button class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></button>
+                            </div> 
+                        </div>
+                    </form>
+                </div>
+            </div>
+    </div>
+    <br>
+    <div class="container">
+    <div class="table-responsive-md">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    {% if id is null %}
+                        {% with id=1 %}
+                        <th scope="col"><a href="{% url 'orderby_scadenze_beneficiario' id=id %}">Beneficiario</a></th>
+                        {% endwith %}
+                    {% else %}
+                        {% if id is 1 %}
+                                <th scope="col"><a href="{% url 'orderby_scadenze_beneficiario' id=id %}">Beneficiario</a></th>
+                        {% else %}
+                                <th scope="col"><a href="{% url 'orderby_scadenze_beneficiario' id=id %}">Beneficiario</a></th>
+                        {% endif %}
+                    {% endif %}
+                    {% if id is null %}
+                        {% with id=1 %}
+                        <th scope="col"><a href="{% url 'orderby_scadenze_data' id=id %}">Data Scadenza</a></th>
+                        {% endwith %}
+                    {% else %}
+                        <th scope="col"><a href="{% url 'orderby_scadenze_data' id=id %}">Data Scadenza</a></th>
+                    {% endif %}
+                    {% if id is null %}
+                        {% with id=1 %}
+                        <th scope="col"><a href="{% url 'orderby_scadenze_importo' id=id %}">Importo</a></th>
+                        {% endwith %}
+                    {% else %}
+                        <th scope="col"><a href="{% url 'orderby_scadenze_importo' id=id %}">Importo</a></th>
+                    {% endif %}
+                    <th scope="col">Sollecito</th>
+                    <th scope="col">Giorni Ritardo/Mancanti(-)</th>
+                    <th scope="col">Data Pagamento</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for scadenza in page_obj %}  
+                <tr>
+                    <td>
+                       {{ scadenza.beneficiario }}
+                    </td>
+                    <td>
+                       {{ scadenza.datascadenza }}
+                     </td>
+                    <td>
+                       {{ scadenza.importo }}
+                    </td>
+                    <td>
+                       {{ scadenza.sollecito }}
+                    </td>
+                    <td>
+                        {% if scadenza.giorniritardo >= 0 %}<span class="myclass">{{ scadenza.giorniritardo }}</span> {% else %} {{ scadenza.giorniritardo }} {% endif %}
+                    </td>
+                    <td> 
+                        {%  if scadenza.datapagamento != None %}{{ scadenza.datapagamento }} {% else %} {{ ' ' }}{% endif %}
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <input type="hidden" id="idscadenza" value={{ scadenza.id }} name="idscadenza"/>
+                            <a href="{% url 'detailscadenza' pk=scadenza.id %}" class="btn btn-outline-primary">Dettaglio</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}                 
+            </tbody>
+        </table>
+    </div>
+    {% include "pagination.html" %}
+    {% endblock content %}
+   </div>
+</body>
+</html>

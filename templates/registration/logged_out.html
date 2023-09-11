@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<br>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="alert alert-success">
+          <h2 style="text-align:center;">
+              <b>
+              <div style="font-variant: small-caps;">LOGOUT
+              </b>
+              </div> 
+        </h2>
+      </div>
+  </div>
+</div>  
+<br>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <p>Logout completato!</p>
+        <a href="{% url 'login'%}">Clicca qui per rieffettuare il login!</a>
+    </div>
+</div> 
+{% endblock content %}
