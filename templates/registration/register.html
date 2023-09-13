@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <br>
+    <br>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="alert alert-success">
+          <h2 style="text-align:center;">
+              <div style="font-variant: small-caps;"><b>REGISTRATI</b></div>
+        </h2>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <br>
+        <h2>Registrati sul nostro Sito</h2>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {{ form|crispy }}
+            <br>
+          <button type="submit" class="btn btn-primary">Crea un account</button>
+        </form>
+          <br>
+          <div class="col-md-6">
+            <small class="text-muted">
+                Hai già un account? <a class="ml-2" href="/accounts/login">login</a>
+            </small>
+        </div>
+      </div>
+    </div>
+{% endblock content %}

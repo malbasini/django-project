@@ -18,12 +18,12 @@ from django.urls import path,include
 from scadenzario.views import download_file,index_scadenze_order_by_beneficiario,index_scadenze_order_by_data,index_scadenze_order_by_importo
 from scadenzario.views import index,get_queryset,update_view,detail_view,delete_view,index_scadenze,get_queryset_scadenze
 from scadenzario.views import registrazione,homepage,creaBeneficiarioView,creaScadenzaView,detail_view_scadenza
-from scadenzario.views import update_view_scadenza,delete_view_scadenza,update_view_sql,delete_ricevuta,index_order_by
+from scadenzario.views import update_view_scadenza,delete_view_scadenza,update_view_sql,delete_ricevuta,index_order_by,activate,register
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', homepage, name='homepage'),
-    path('registrazione/', registrazione, name='registrazione'),
+    path('registrazione/', register, name='registrazione'),
     path('beneficiario/', creaBeneficiarioView, name='beneficiario'),
     path('beneficiari/', index, name='myindex'),
     path('listascadenze/', index_scadenze, name='index'),
@@ -45,4 +45,5 @@ urlpatterns = [
     path('orderby_scadenze_importoscadenza/<int:id>',index_scadenze_order_by_importo,name='orderby_scadenze_importo'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('summernote/', include('django_summernote.urls')),
+    path('activate/<uidb64>/<token>', activate, name='activate')
 ]

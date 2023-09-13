@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect
 from .forms import FormRegistrazioneUser,BeneficiarioModelForm, ScadenzeModelForm
 from django.contrib.auth.models import User
@@ -16,9 +16,95 @@ import os
 # Import HttpResponse module
 from django.http.response import HttpResponse
 from django.db import connection, connections
-
+from typing import Protocol
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import EmailMessage
+from .forms import UserRegistrationForm
+from .decorators import user_not_authenticated
+from .tokens import account_activation_token
+from django.contrib import messages
 # Create your views here.
 
+def activate(request, uidb64, token):
+    User = get_user_model()
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except:
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        confirmed = True
+        return render(
+            request=request,
+            template_name="registration/confirmed.html",
+            context={"confirmed": confirmed})
+    else:
+        confirmed = False
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+            user.delete()
+        except:
+            user = None
+        return render(
+            request=request,
+            template_name="registration/confirmed.html",
+            context={"confirmed": confirmed})
+
+def activateEmail(request, user, to_email):
+    mail_subject = "Activate your user account."
+    message = render_to_string("template_activate_account.html", {
+        'user': user.username,
+        'domain': get_current_site(request).domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': account_activation_token.make_token(user),
+        "protocol": 'https' if request.is_secure() else 'http'
+    })
+    email = EmailMessage(mail_subject, message, to=[to_email])
+    if email.send():
+        message = f'Dear <b>{user}</b>, please go to you email <b>{to_email}</b> inbox and click on \
+                received activation link to confirm and complete the registration. <b>Note:</b> Check your spam folder.'
+    else:
+        message = f'Problem sending email to {to_email}, check if you typed it correctly.'
+        return render(
+            request=request,
+            template_name="registration/register.html",
+            context={"message":message}
+    )
+@user_not_authenticated
+def register(request):
+    if request.method == "POST":
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active=False
+            user.save()
+            activateEmail(request, user, form.cleaned_data.get('email'))
+            return render(
+                request=request,
+                template_name="registration/confirm.html",
+                context={"form": form}
+            )
+        else:
+            for error in list(form.errors.values()):
+                messages.error(request, error)
+
+    else:
+        form = UserRegistrationForm()
+
+    return render(
+        request=request,
+        template_name="registration/register.html",
+        context={"form": form}
+        )
 #HOME PAGE
 @login_required(login_url='/accounts/login/')
 def homepage(request):

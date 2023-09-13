@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if confirmed %}
+        <br>
+        <br>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="alert alert-success">
+                  <h2 style="text-align:center;">
+                      <div style="font-variant: small-caps;"><b>GRAZIE PER AVER CONFERMATO LA MAIL</b></div>
+                </h2>
+              </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <div class="container">
+                <p>Accedi alla pagina di login <a href="/accounts/login">login</a></p>
+        </div>
+    {% else %}
+        <br>
+        <br>
+        <div class="container">
+           <div class="row justify-content-center">
+                <div class="alert alert-danger">
+                  <h2 style="text-align:center;">
+                      <div style="font-variant: small-caps;"><b>ERRORE</b></div>
+                </h2>
+              </div>
+              <br>
+              <p><b>Errore nella generazione del token.
+              Contattare l'amministratore di sistema.</b></p>
+        </div>
+    {% endif %}
+{% endblock %}

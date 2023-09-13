@@ -11,6 +11,8 @@ from phonenumber_field.formfields import PhoneNumberField
 from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Checkbox
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import get_user_model
 
 
 class FormRegistrazioneUser(forms.ModelForm):
@@ -66,4 +68,20 @@ class ScadenzeModelForm(forms.ModelForm):
     class Meta:
         model = ModelScadenze
         fields = ["id","beneficiario","datascadenza", "importo", "sollecito","giorniritardo", "datapagamento", "iduser","count","idbeneficiario_id"]
- 
+
+
+class UserRegistrationForm(UserCreationForm):
+        email = forms.EmailField(help_text='Un indirizzo email valido per favore.', required=True)
+        captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(api_params={'hl': 'cl', 'onload': 'onLoadFunc'}))
+
+        class Meta:
+            model = get_user_model()
+            fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2','captcha']
+
+        def save(self, commit=True):
+            user = super(UserRegistrationForm, self).save(commit=False)
+            user.email = self.cleaned_data['email']
+            if commit:
+                user.save()
+
+            return user
