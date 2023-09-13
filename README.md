@@ -31,6 +31,8 @@ CHANGE COLUMN `contentFile` `contentFile` LONGBLOB NOT NULL ;
 
 -----------------------------------------------------------------------------------------
 
-STEP 4) Installa il certificato che si trova nella cartella python 3.x. in base
-alla tua installazione. Normalmente basta fare un doppio click su di esso
+STEP 4) Installa le dipendenze che si trovano nel file requirements.txt con il
+comando pip install -r requirements.txt
 
+STEP 6) Installa il certificato che si trova nella cartella python 3.x. in base
+alla tua installazione. Normalmente basta fare un doppio click su di esso

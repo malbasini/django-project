@@ -1,0 +1,13 @@
+django
+mysql-connector-python
+python-decouple
+django-phonenumber-field
+django-crispy-forms
+crispy-bootstrap5
+django-widget-tweaks
+django-summernote
+django-recaptcha
+pymysql
+phonenumbers
+six
+certifi
