@@ -1,10 +1,16 @@
 # django-project
-STEP 1) CREATE SCHEMA `scadenzario` DEFAULT CHARACTER SET utf8mb4 ;
 
-STEP 2) Eseguire le migrazioni dal progetto con il comando python3 manage.py migrate
+STEP 1) Installa le dipendenze che si trovano nel file requirements.txt con il
+comando pip install -r requirements.txt
 
-STEP3 )Eseguire i seguenti comandi nel query editor di MySQLWorkBench, se disponibile altrimenti 
-usa la riga di comando di MySQL.
+COMANDI PER CREARE LA BASE DATI
+
+STEP 2) CREATE SCHEMA `scadenzario` DEFAULT CHARACTER SET utf8mb4 ;
+
+STEP 3) Eseguire le migrazioni dal progetto con il comando python3 manage.py migrate
+
+STEP 4)Eseguire i seguenti comandi nel query editor di MySQLWorkBench, se disponibile 
+altrimenti usa la riga di comando di MySQL.
 
 ----------------------------------------------------------------------------------------
 ALTER TABLE `scadenzario`.`scadenzario_modelricevute` 
@@ -31,8 +37,8 @@ CHANGE COLUMN `contentFile` `contentFile` LONGBLOB NOT NULL ;
 
 -----------------------------------------------------------------------------------------
 
-STEP 4) Installa le dipendenze che si trovano nel file requirements.txt con il
-comando pip install -r requirements.txt
+STEP 5) Trova il file di installazione del certificato 
+che normalmente si trova nella cartella python 3.x. in base
+alla tua installazione. Normalmente basta fare un doppio click su di esso.
 
-STEP 6) Installa il certificato che si trova nella cartella python 3.x. in base
-alla tua installazione. Normalmente basta fare un doppio click su di esso
+STEP 6) Crea il file .env sotto la cartella MyProject.
