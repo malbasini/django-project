@@ -41,4 +41,4 @@ STEP 5) Trova il file di installazione del certificato
 che normalmente si trova nella cartella python 3.x. in base
 alla tua installazione. Normalmente basta fare un doppio click su di esso.
 
-STEP 6) Crea il file .env sotto la cartella MyProject.
+STEP 6) Crea il file .env (configurazione) sotto la cartella MyProject.
